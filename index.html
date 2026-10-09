@@ -1212,6 +1212,182 @@
       align-items: center;
     }
 
+    /* Duo Product Grid */
+    .products-duo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 36px;
+    }
+
+    .product-card-v2 {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .product-card-v2:hover {
+      border-color: rgba(0, 210, 255, 0.45);
+      transform: translateY(-4px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 210, 255, 0.15);
+    }
+
+    .product-card-v2.highlight {
+      border-color: rgba(0, 210, 255, 0.45);
+      background: linear-gradient(180deg, rgba(16, 28, 48, 0.85) 0%, rgba(15, 23, 38, 0.95) 100%);
+    }
+
+    .product-card-v2.highlight::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(0, 210, 255, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .product-card-v2 .product-gallery-box {
+      position: relative;
+      text-align: center;
+      margin-bottom: 22px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      height: 240px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-card-v2 .product-gallery-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+
+    .product-card-v2:hover .product-gallery-box img {
+      transform: scale(1.03);
+    }
+
+    .product-badge-s3 {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: linear-gradient(135deg, #00d2ff, #3b82f6);
+      color: #070b12;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(0, 210, 255, 0.5);
+      z-index: 2;
+    }
+
+    .product-badge-cyd {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--shopee);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(238, 77, 45, 0.5);
+      z-index: 2;
+    }
+
+    .product-card-v2 h3 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .product-card-v2 p.desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .product-card-v2 .chip-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      margin-bottom: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Board selector tabs in flasher */
+    .board-selector-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .board-tab-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .board-tab-btn:hover {
+      border-color: rgba(0, 210, 255, 0.4);
+      color: #fff;
+    }
+
+    .board-tab-btn.active {
+      background: rgba(0, 210, 255, 0.1);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .board-tab-btn .badge-chip {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      margin-left: auto;
+      font-weight: 600;
+    }
+
+    .board-tab-btn.active .badge-chip {
+      background: var(--primary);
+      color: #070b12;
+      font-weight: 800;
+    }
+
     /* Footer */
     .footer {
       border-top: 1px solid var(--border-color);
@@ -1269,7 +1445,8 @@
       .hero-grid,
       .cyd-grid,
       .flasher-layout,
-      .product-card {
+      .product-card,
+      .products-duo-grid {
         grid-template-columns: 1fr;
         gap: 36px;
       }
@@ -1305,6 +1482,18 @@
         grid-template-columns: 1fr;
       }
 
+      .cyd-thumbnails {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .cyd-live-breakdown {
+        grid-template-columns: 1fr;
+      }
+
+      .board-selector-tabs {
+        grid-template-columns: 1fr;
+      }
+
       .hero-buttons {
         flex-direction: column;
         width: 100%;
@@ -1330,7 +1519,7 @@
 
         <ul class="nav-links">
           <li><a href="#features">Tính Năng App</a></li>
-          <li><a href="#cyd-display">Màn Hình CYD 2.8"</a></li>
+          <li><a href="#cyd-display">Màn Hình HUD 2.8"</a></li>
           <li><a href="#flasher">Nạp Firmware</a></li>
           <li><a href="#shop">Mua Sản Phẩm</a></li>
         </ul>
@@ -1413,10 +1602,10 @@
             <img src="assets/ai_s1_final.jpg" alt="DimoHub trong buồng lái xe hơi" class="main-img">
             
             <div class="floating-cyd-badge">
-              <img src="cyd.jpeg" alt="Màn hình CYD 2.8 inch DimoHub">
+              <img src="assets/hub_cyd_demo.jpeg" alt="Màn hình 2.8 inch DimoHub chụp thực tế">
               <div>
-                <h5>ESP32 CYD 2.8"</h5>
-                <p>Màn hình taplo độc lập chạy DimoHub</p>
+                <h5>ESP32 CYD & S3 2.8"</h5>
+                <p><span class="cyd-live-dot" style="width:6px;height:6px;margin-right:4px;"></span> Ảnh thực tế sau khi nạp</p>
               </div>
             </div>
           </div>
@@ -1510,32 +1699,84 @@
       <div class="cyd-grid">
         <div class="cyd-gallery">
           <div class="cyd-main-view">
-            <img src="cyd.jpeg" alt="ESP32 Cheap Yellow Display nạp DimoHub">
+            <div class="cyd-badge-bar">
+              <span class="cyd-live-pill"><span class="cyd-live-dot"></span> ẢNH CHỤP THỰC TẾ 100% (ĐÃ NẠP HUB)</span>
+              <span class="cyd-chip-pill">MÀN HÌNH 2.8" TFT MÀU</span>
+            </div>
+            <div class="cyd-img-frame">
+              <img id="cydMainImg" src="assets/hub_cyd_demo.jpeg" alt="Ảnh chụp thực tế màn hình DimoHub ESP32 CYD 2.8 inch khi đã nạp firmware">
+            </div>
+
+            <!-- Interactive Thumbnails -->
+            <div class="cyd-thumbnails">
+              <div class="cyd-thumb active" data-src="assets/hub_cyd_demo.jpeg">
+                <img src="assets/hub_cyd_demo.jpeg" alt="Ảnh thật đã nạp">
+                <span>📸 Ảnh thật đã nạp</span>
+              </div>
+              <div class="cyd-thumb" data-src="assets/ES3C28P.jpeg">
+                <img src="assets/ES3C28P.jpeg" alt="Board ESP32-S3 ES3C28P">
+                <span>⚡ ESP32-S3 Mới</span>
+              </div>
+              <div class="cyd-thumb" data-src="cyd.jpeg">
+                <img src="cyd.jpeg" alt="Board ESP32 CYD">
+                <span>🔌 ESP32 CYD</span>
+              </div>
+              <div class="cyd-thumb" data-src="assets/ai_s1_final.jpg">
+                <img src="assets/ai_s1_final.jpg" alt="Trên taplo xe hơi">
+                <span>🚗 Lắp trên taplo</span>
+              </div>
+            </div>
           </div>
-          <div class="cyd-screen-view">
-            <img src="s1.jpg" alt="Giao diện DimoHub trên màn hình">
-            <div>
-              <h4>Đồng bộ dữ liệu hoàn hảo</h4>
-              <p>Tốc độ hiện tại, tốc độ cho phép, tên đường (Lê Đức Thọ), cự ly camera phạt nguội và tình trạng pin điện thoại.</p>
+
+          <!-- Live Screen Feature Breakdown -->
+          <div class="cyd-live-breakdown">
+            <div class="breakdown-card">
+              <span class="breakdown-icon">🏎️</span>
+              <div class="breakdown-info">
+                <strong>Tốc Độ Xe: 0 km/h</strong>
+                <span>Nhận GPS điện thoại & BLE &lt; 50ms</span>
+              </div>
+            </div>
+            <div class="breakdown-card">
+              <span class="breakdown-icon">↗️</span>
+              <div class="breakdown-info">
+                <strong>Rẽ phải 274m • Ngọc Thụy</strong>
+                <span>Dẫn đường rẽ Waze Mod tiếng Việt</span>
+              </div>
+            </div>
+            <div class="breakdown-card">
+              <span class="breakdown-icon">🛑</span>
+              <div class="breakdown-info">
+                <strong>Biển Báo: 50 km/h</strong>
+                <span>Tự nhận diện tốc độ tối đa</span>
+              </div>
+            </div>
+            <div class="breakdown-card">
+              <span class="breakdown-icon">⚠️</span>
+              <div class="breakdown-info">
+                <strong>Cảnh Báo: Nhập làn 770m</strong>
+                <span>Báo trước chốt, camera phạt nguội</span>
+              </div>
             </div>
           </div>
         </div>
 
         <div class="cyd-details">
           <span class="section-badge">PHẦN CỨNG ĐỘC LẬP</span>
-          <h2>Màn Hình Phụ Taplo ESP32 CYD 2.8 Inch</h2>
+          <h2>Màn Hình Phụ Taplo DimoHub 2.8 Inch</h2>
           <p class="lead">
-            Biến chiếc bo mạch hiển thị <strong>ESP32-2432S028R (Cheap Yellow Display)</strong> thành một chiếc màn hình HUD Taplo chuyên nghiệp đặt ngay trước vô lăng ô tô hoặc đầu xe máy.
+            Hỗ trợ chính thức 2 dòng bo mạch: <strong>ESP32-S3 ES3C28P (Cảm ứng điện dung cao cấp)</strong> và <strong>ESP32-2432S028R (CYD cảm ứng điện trở giá rẻ)</strong>. Đặt ngay trước vô lăng ô tô hoặc đầu xe máy, tự động đồng bộ Bluetooth BLE thời gian thực!
           </p>
 
           <!-- Important Note -->
           <div class="note-box">
             <h4>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-              LƯU Ý QUAN TRỌNG KHI MUA HOẶC NẠP BO MẠCH
+              HAI PHIÊN BẢN BO MẠCH ĐƯỢC HỖ TRỢ
             </h4>
             <p>
-              Vui lòng chọn đúng <strong>màn hình loại 2.8 inch</strong> (Mã sản phẩm <strong>ESP32-2432S028R</strong>). Firmware DimoHub được xây dựng và căn chỉnh chính xác theo độ phân giải màn hình 240x320 pixel và chip điều khiển cảm ứng của dòng 2.8 inch!
+              • <strong>ESP32-S3 ES3C28P:</strong> Màn hình cảm ứng điện dung mượt mà, chip ESP32-S3 mạnh mẽ, tích hợp microphone.<br>
+              • <strong>ESP32 CYD (ESP32-2432S028R):</strong> Bo mạch quốc dân cảm ứng điện trở, giá thành siêu rẻ và phổ biến.
             </p>
           </div>
 
@@ -1549,8 +1790,8 @@
               <span class="value">240 × 320 Pixels</span>
             </li>
             <li class="spec-item">
-              <span class="label">Vi xử lý</span>
-              <span class="value">ESP32 Dual-Core</span>
+              <span class="label">Vi xử lý hỗ trợ</span>
+              <span class="value">ESP32 & ESP32-S3 Dual-Core</span>
             </li>
             <li class="spec-item">
               <span class="label">Cổng kết nối</span>
@@ -1566,12 +1807,15 @@
             </li>
           </ul>
 
-          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
-            <a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener" class="btn btn-shopee btn-lg">
-              🛒 Đặt Mua Màn Hình 2.8" Trên Shopee
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="https://s.shopee.vn/3B83Ot3kh5" target="_blank" rel="noopener" class="btn btn-shopee btn-lg">
+              🔥 Mua Board Mới ESP32-S3 (Shopee)
             </a>
-            <a href="#flasher" class="btn btn-outline btn-lg">
-              ⚡ Nạp Firmware Cho CYD
+            <a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener" class="btn btn-outline btn-lg">
+              🛒 Mua Board CYD 2.8" (Shopee)
+            </a>
+            <a href="#flasher" class="btn btn-primary btn-lg">
+              ⚡ Nạp Firmware Trực Tiếp
             </a>
           </div>
         </div>
@@ -1584,9 +1828,9 @@
     <div class="container">
       <div class="section-header">
         <span class="section-badge">CÔNG CỤ TRÌNH DUYỆT TRỰC TIẾP</span>
-        <h2 class="section-title">Nạp Firmware Cho Màn Hình ESP32 CYD 2.8"</h2>
+        <h2 class="section-title">Nạp Firmware Cho Màn Hình ESP32 CYD & ESP32-S3 2.8"</h2>
         <p class="section-subtitle">
-          Nạp trực tiếp file firmware <code>esp32-cyd-dimohub.bin</code> qua trình duyệt Web Serial (Google Chrome / Microsoft Edge) mà không cần cài đặt phần mềm IDE phức tạp.
+          Nạp trực tiếp firmware <code>esp32s3-ES3C28P.bin</code> hoặc <code>esp32-cyd-dimohub.bin</code> qua trình duyệt Web Serial (Google Chrome / Microsoft Edge) mà không cần cài đặt phần mềm IDE phức tạp.
         </p>
       </div>
 
@@ -1598,17 +1842,40 @@
             
             <ol class="steps-list">
               <li class="step-item">
-                <strong>Cắm cáp USB Type-C:</strong> Nối cổng USB trên màn hình CYD 2.8" vào cổng USB của máy tính (dùng cáp truyền dữ liệu, không dùng cáp chỉ sạc).
+                <strong>Cắm cáp USB Type-C:</strong> Nối cổng USB trên màn hình vào cổng USB của máy tính (dùng cáp truyền dữ liệu, không dùng cáp chỉ sạc).
               </li>
               <li class="step-item">
-                <strong>Chọn cổng kết nối:</strong> Bấm nút <em>"⚡ Kết Nối & Nạp Firmware"</em> bên dưới và chọn cổng Serial COM của bo mạch ESP32.
+                <strong>Chọn loại bo mạch:</strong> Chọn đúng bo mạch bạn đang sử dụng (ESP32-S3 ES3C28P hoặc ESP32 CYD 2.8").
               </li>
               <li class="step-item">
-                <strong>Tự động ghi flash:</strong> Trình duyệt sẽ tự động tải file <code>esp32-cyd-dimohub.bin</code> và nạp vào địa chỉ <code>0x10000</code>. Khi nạp đạt 100%, màn hình CYD sẽ tự khởi động và hiển thị logo DimoHub!
+                <strong>Bấm nạp tự động:</strong> Bấm nút <em>"⚡ Kết Nối & Nạp Firmware"</em> bên dưới, chọn cổng COM. Trình duyệt sẽ tự động nạp file vào offset <code>0x10000</code>. Khi đạt 100%, màn hình sẽ tự khởi động chạy DimoHub!
               </li>
             </ol>
 
             <div class="flasher-form">
+              <!-- Board Selector -->
+              <div class="form-group" style="margin-bottom: 6px;">
+                <label style="display:block; margin-bottom: 8px; font-weight: 700; color: #fff;">Chọn Loại Bo Mạch Muốn Nạp:</label>
+                <div class="board-selector-tabs">
+                  <div class="board-tab-btn active" data-board="s3" id="tabBoardS3">
+                    <span style="font-size: 1.2rem;">⚡</span>
+                    <div>
+                      <div style="font-weight: 700; color: #fff;">ESP32-S3 ES3C28P</div>
+                      <div style="font-size: 0.75rem; color: var(--text-muted);">Cảm ứng điện dung</div>
+                    </div>
+                    <span class="badge-chip">MỚI NHẤT</span>
+                  </div>
+                  <div class="board-tab-btn" data-board="cyd" id="tabBoardCyd">
+                    <span style="font-size: 1.2rem;">🔌</span>
+                    <div>
+                      <div style="font-weight: 700; color: #fff;">ESP32 CYD 2.8"</div>
+                      <div style="font-size: 0.75rem; color: var(--text-muted);">ESP32-2432S028R</div>
+                    </div>
+                    <span class="badge-chip">TIẾT KIỆM</span>
+                  </div>
+                </div>
+              </div>
+
               <div class="form-row">
                 <div class="form-group">
                   <label for="baudRateSelect">Tốc độ Baud (Baudrate):</label>
@@ -1625,12 +1892,12 @@
               </div>
 
               <div class="form-group">
-                <label>File Firmware:</label>
+                <label>File Firmware Nạp:</label>
                 <div style="display: flex; align-items: center; justify-content: space-between; background: #070b12; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                  <span style="font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px;">
-                    📄 <strong>esp32-cyd-dimohub.bin</strong> (1.31 MB)
+                  <span id="firmwareFileInfo" style="font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+                    📄 <strong id="firmwareFileName">esp32s3-ES3C28P.bin</strong> <span id="firmwareFileSize" style="color: var(--primary);">(1.39 MB)</span>
                   </span>
-                  <a href="esp32-cyd-dimohub.bin" download class="btn btn-outline btn-sm" title="Tải file .bin về máy">
+                  <a id="firmwareDownloadLink" href="esp32s3-ES3C28P.bin" download class="btn btn-outline btn-sm" title="Tải file .bin về máy">
                     📥 Tải File .BIN
                   </a>
                 </div>
@@ -1703,63 +1970,89 @@ Màn hình tương thích: ESP32 CYD 2.8 inch (ESP32-2432S028R).
     <div class="container">
       <div class="section-header">
         <span class="section-badge">MUA SẢN PHẨM PHẦN CỨNG</span>
-        <h2 class="section-title">Đặt Mua Màn Hình ESP32 CYD 2.8 Inch</h2>
+        <h2 class="section-title">Đặt Mua Màn Hình Phần Cứng 2.8" Cho DimoHub</h2>
         <p class="section-subtitle">
-          Trang bị ngay màn hình HUD Taplo thông minh cho xế yêu của bạn với link đặt hàng chính hãng giá ưu đãi nhất.
+          Lựa chọn bo mạch phù hợp với nhu cầu của bạn. Cả hai phiên bản đều được hỗ trợ Firmware DimoHub chính thức và tự động đồng bộ Bluetooth BLE thời gian thực!
         </p>
       </div>
 
-      <div class="product-card">
-        <div class="product-gallery">
-          <span class="product-badge-float">Shopee Mall / Yêu Thích</span>
-          <img src="cyd.jpeg" alt="Màn hình CYD 2.8 inch DimoHub">
-        </div>
-
-        <div class="product-info">
-          <h3>Màn Hình Taplo DimoHub CYD 2.8"</h3>
-          <p class="desc">
-            Bo mạch hiển thị màu cảm ứng <strong>ESP32-2432S028R</strong> tích hợp chip ESP32 mạnh mẽ, tự động kết nối Bluetooth BLE với ứng dụng DimoHub trên điện thoại khi bạn lên xe.
-          </p>
-
-          <!-- Important Note for Buyers -->
-          <div class="note-box" style="margin-bottom: 24px;">
-            <h4>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-              LƯU Ý KHI ĐẶT HÀNG TRÊN SHOPEE
-            </h4>
-            <p>
-              Khi vào link Shopee, quý khách vui lòng chọn phân loại <strong>màn hình loại 2.8 inch</strong> (ESP32-2432S028). Đây là phiên bản được tối ưu tương thích tốt nhất với Firmware DimoHub!
-            </p>
+      <div class="products-duo-grid">
+        <!-- Product 1: ESP32-S3 ES3C28P (Capacitive Touch) -->
+        <div class="product-card-v2 highlight">
+          <div class="product-gallery-box">
+            <span class="product-badge-s3">⚡ KHUYÊN DÙNG • CẢM ỨNG ĐIỆN DUNG</span>
+            <img src="assets/ES3C28P.jpeg" alt="Bo mạch ESP32-S3 ES3C28P 2.8 inch cảm ứng điện dung">
           </div>
 
-          <ul class="package-includes">
+          <span class="chip-tag">CHIP ESP32-S3 DUAL-CORE • CAPACITIVE TOUCH</span>
+          <h3>Màn Hình ESP32-S3 ES3C28P 2.8"</h3>
+          <p class="desc">
+            Bo mạch thế hệ mới trang bị vi xử lý <strong>ESP32-S3</strong> cực mạnh, màn hình cảm ứng điện dung (Capacitive Touch) siêu mượt tương tự smartphone, tích hợp microphone đàm thoại và cổng kết nối USB Type-C hiện đại.
+          </p>
+
+          <ul class="package-includes" style="margin-bottom: 24px;">
             <li>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Màn hình màu TFT 2.8 inch cảm ứng</strong> sắc nét, góc nhìn rộng, độ tương phản cao.</span>
+              <span><strong>Màn hình cảm ứng điện dung (Capacitive)</strong> 2.8 inch cực nhạy, không cần nhấn lực.</span>
             </li>
             <li>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Tích hợp vi xử lý ESP32 Dual-Core</strong> có Bluetooth BLE & Wi-Fi băng thông rộng.</span>
+              <span><strong>Chip ESP32-S3 Dual-Core</strong> xử lý đồ họa mượt mà, RAM/Flash lớn hơn.</span>
             </li>
             <li>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Có sẵn loa buzzer / khe thẻ nhớ MicroSD</strong> và cổng cấp nguồn USB Type-C tiện lợi.</span>
+              <span><strong>Tích hợp Micro & Speaker</strong> chuẩn bị cho tính năng giọng nói tương lai.</span>
             </li>
             <li>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Hỗ trợ nạp Firmware DimoHub trọn đời</strong> chỉ bằng 1 cú nhấp chuột trực tiếp trên trang web.</span>
+              <span><strong>Nạp firmware chính thức <code>esp32s3-ES3C28P.bin</code></strong> 1-click qua Web Serial.</span>
             </li>
           </ul>
 
-          <div class="product-actions">
-            <!-- Shopee Direct Purchase Link -->
-            <a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener" class="btn btn-shopee btn-lg">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-              Mua Ngay Trên Shopee (Link 2.8 Inch)
+          <div class="product-actions" style="margin-top: auto;">
+            <a href="https://s.shopee.vn/3B83Ot3kh5" target="_blank" rel="noopener" class="btn btn-shopee btn-lg" style="width: 100%;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              🛒 Mua Board ESP32-S3 (Shopee Mới)
             </a>
+          </div>
+        </div>
 
-            <a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
-              📲 Tải App Android
+        <!-- Product 2: ESP32 CYD 2.8" (Resistive Touch) -->
+        <div class="product-card-v2">
+          <div class="product-gallery-box">
+            <span class="product-badge-cyd">🔌 BẢN QUỐC DÂN • GIÁ TIẾT KIỆM</span>
+            <img src="assets/hub_cyd_demo.jpeg" alt="Màn hình ESP32 CYD 2.8 inch DimoHub hoàn thiện đã nạp">
+          </div>
+
+          <span class="chip-tag">CHIP ESP32 CLASSIC • RESISTIVE TOUCH</span>
+          <h3>Màn Hình ESP32 CYD 2.8" (ESP32-2432S028R)</h3>
+          <p class="desc">
+            Chiếc màn hình <strong>Cheap Yellow Display (CYD) 2.8"</strong> huyền thoại được cộng đồng DIY toàn cầu ưa chuộng. Giá thành rẻ nhất, tối ưu chi phí tối đa để sở hữu một chiếc HUD taplo đầy đủ tính năng.
+          </p>
+
+          <ul class="package-includes" style="margin-bottom: 24px;">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Màn hình màu TFT 2.8 inch cảm ứng điện trở</strong> độ tương phản cao, góc nhìn rộng.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Vi xử lý ESP32 Dual-Core</strong> có Bluetooth BLE & Wi-Fi hoạt động ổn định.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Giá thành siêu tiết kiệm</strong> chỉ từ 150.000đ - 180.000đ trên Shopee.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Nạp firmware chính thức <code>esp32-cyd-dimohub.bin</code></strong> tương thích 100%.</span>
+            </li>
+          </ul>
+
+          <div class="product-actions" style="margin-top: auto;">
+            <a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener" class="btn btn-shopee btn-lg" style="width: 100%;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              🛒 Mua Board CYD 2.8" (Shopee)
             </a>
           </div>
         </div>
@@ -1855,6 +2148,58 @@ Màn hình tương thích: ESP32 CYD 2.8 inch (ESP32-2432S028R).
     const progressPercentage = document.getElementById('progressPercentage');
     const progressFill = document.getElementById('progressFill');
 
+    let currentBoard = 's3';
+    let currentFirmware = 'esp32s3-ES3C28P.bin';
+
+    const tabBoardS3 = document.getElementById('tabBoardS3');
+    const tabBoardCyd = document.getElementById('tabBoardCyd');
+    const firmwareFileName = document.getElementById('firmwareFileName');
+    const firmwareFileSize = document.getElementById('firmwareFileSize');
+    const firmwareDownloadLink = document.getElementById('firmwareDownloadLink');
+
+    function selectBoard(board) {
+      currentBoard = board;
+      if (board === 's3') {
+        tabBoardS3?.classList.add('active');
+        tabBoardCyd?.classList.remove('active');
+        currentFirmware = 'esp32s3-ES3C28P.bin';
+        if (firmwareFileName) firmwareFileName.textContent = 'esp32s3-ES3C28P.bin';
+        if (firmwareFileSize) firmwareFileSize.textContent = '(1.39 MB)';
+        if (firmwareDownloadLink) firmwareDownloadLink.href = 'esp32s3-ES3C28P.bin';
+        log('[Chọn Bo Mạch] Đã chọn ESP32-S3 ES3C28P 2.8" (Cảm ứng điện dung - File: esp32s3-ES3C28P.bin).', 'info');
+      } else {
+        tabBoardCyd?.classList.add('active');
+        tabBoardS3?.classList.remove('active');
+        currentFirmware = 'esp32-cyd-dimohub.bin';
+        if (firmwareFileName) firmwareFileName.textContent = 'esp32-cyd-dimohub.bin';
+        if (firmwareFileSize) firmwareFileSize.textContent = '(1.31 MB)';
+        if (firmwareDownloadLink) firmwareDownloadLink.href = 'esp32-cyd-dimohub.bin';
+        log('[Chọn Bo Mạch] Đã chọn ESP32 CYD 2.8" ESP32-2432S028R (Cảm ứng điện trở - File: esp32-cyd-dimohub.bin).', 'info');
+      }
+    }
+
+    tabBoardS3?.addEventListener('click', () => selectBoard('s3'));
+    tabBoardCyd?.addEventListener('click', () => selectBoard('cyd'));
+
+    // Interactive Thumbnail Switching for Hardware Showcase
+    document.querySelectorAll('.cyd-thumb').forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        document.querySelectorAll('.cyd-thumb').forEach(t => t.classList.remove('active'));
+        thumb.classList.add('active');
+        const src = thumb.getAttribute('data-src');
+        const mainImg = document.getElementById('cydMainImg');
+        if (mainImg && src) {
+          mainImg.style.opacity = '0.2';
+          mainImg.style.transform = 'scale(0.98)';
+          setTimeout(() => {
+            mainImg.src = src;
+            mainImg.style.opacity = '1';
+            mainImg.style.transform = 'scale(1)';
+          }, 150);
+        }
+      });
+    });
+
     function log(message, type = 'info') {
       const span = document.createElement('span');
       span.className = `log-${type}`;
@@ -1876,7 +2221,6 @@ Màn hình tương thích: ESP32 CYD 2.8 inch (ESP32-2432S028R).
         log(data, 'info');
       },
       write(data) {
-        // If data contains progress or chunk
         const span = document.createElement('span');
         span.className = 'log-info';
         span.textContent = data;
@@ -1906,7 +2250,7 @@ Màn hình tương thích: ESP32 CYD 2.8 inch (ESP32-2432S028R).
       let esploader = null;
 
       try {
-        log('\n--- BẮT ĐẦU QUÁ TRÌNH NẠP FIRMWARE CYD 2.8" ---', 'warn');
+        log(`\n--- BẮT ĐẦU QUÁ TRÌNH NẠP FIRMWARE: ${currentFirmware} ---`, 'warn');
         log('1. Đang mở hộp thoại chọn cổng Serial COM...', 'info');
 
         port = await navigator.serial.requestPort();
@@ -1931,11 +2275,11 @@ Màn hình tương thích: ESP32 CYD 2.8 inch (ESP32-2432S028R).
         log(`-> Địa chỉ MAC thiết bị: ${mac}`, 'info');
 
         // Fetch firmware file
-        terminalStatusText.textContent = 'Đang tải file esp32-cyd-dimohub.bin...';
+        terminalStatusText.textContent = `Đang tải file ${currentFirmware}...`;
         progressStatus.textContent = 'Đang tải firmware từ máy chủ...';
-        log('4. Đang nạp dữ liệu firmware: esp32-cyd-dimohub.bin...', 'info');
+        log(`4. Đang nạp dữ liệu firmware: ${currentFirmware}...`, 'info');
 
-        const fwResponse = await fetch('esp32-cyd-dimohub.bin');
+        const fwResponse = await fetch(currentFirmware);
         if (!fwResponse.ok) {
           throw new Error(`Không thể tải file firmware (HTTP ${fwResponse.status})`);
         }
