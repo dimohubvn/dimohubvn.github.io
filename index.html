@@ -1890,18 +1890,6 @@
                   <input type="text" id="flashOffset" class="form-control" value="0x10000" title="Địa chỉ nạp phân vùng App ESP-IDF mặc định là 0x10000">
                 </div>
               </div>
-
-              <div class="form-group">
-                <label>File Firmware Nạp:</label>
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #070b12; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-                  <span id="firmwareFileInfo" style="font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px;">
-                    📄 <strong id="firmwareFileName">esp32s3-ES3C28P.bin</strong> <span id="firmwareFileSize" style="color: var(--primary);">(1.39 MB)</span>
-                  </span>
-                  <a id="firmwareDownloadLink" href="esp32s3-ES3C28P.bin" download class="btn btn-outline btn-sm" title="Tải file .bin về máy">
-                    📥 Tải File .BIN
-                  </a>
-                </div>
-              </div>
             </div>
 
             <!-- Action Buttons -->
@@ -2120,8 +2108,6 @@
           <li><a href="https://s.shopee.vn/3B83Ot3kh5" target="_blank" rel="noopener">Mua Board S3</a></li>
           <li><a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener">Mua Board CYD</a></li>
           <li><a href="#flasher">Nạp Firmware</a></li>
-          <li><a href="esp32s3-ES3C28P.bin" download>FW ESP32-S3 (.bin)</a></li>
-          <li><a href="esp32-cyd-dimohub.bin" download>FW CYD (.bin)</a></li>
           <li><a href="#" class="btnOpenCoffeeModal" style="color: #fbbf24;">☕ Mời Cà Phê</a></li>
         </ul>
       </div>
@@ -2155,8 +2141,6 @@
     const tabBoardCyd = document.getElementById('tabBoardCyd');
     const firmwareFileName = document.getElementById('firmwareFileName');
     const firmwareFileSize = document.getElementById('firmwareFileSize');
-    const firmwareDownloadLink = document.getElementById('firmwareDownloadLink');
-
     function selectBoard(board) {
       currentBoard = board;
       if (board === 's3') {
@@ -2165,7 +2149,6 @@
         currentFirmware = 'esp32s3-ES3C28P.bin';
         if (firmwareFileName) firmwareFileName.textContent = 'esp32s3-ES3C28P.bin';
         if (firmwareFileSize) firmwareFileSize.textContent = '(1.39 MB)';
-        if (firmwareDownloadLink) firmwareDownloadLink.href = 'esp32s3-ES3C28P.bin';
         log('[Chọn Bo Mạch] Đã chọn ESP32-S3 ES3C28P 2.8" (Cảm ứng điện dung - File: esp32s3-ES3C28P.bin).', 'info');
       } else {
         tabBoardCyd?.classList.add('active');
@@ -2173,7 +2156,6 @@
         currentFirmware = 'esp32-cyd-dimohub.bin';
         if (firmwareFileName) firmwareFileName.textContent = 'esp32-cyd-dimohub.bin';
         if (firmwareFileSize) firmwareFileSize.textContent = '(1.31 MB)';
-        if (firmwareDownloadLink) firmwareDownloadLink.href = 'esp32-cyd-dimohub.bin';
         log('[Chọn Bo Mạch] Đã chọn ESP32 CYD 2.8" ESP32-2432S028R (Cảm ứng điện trở - File: esp32-cyd-dimohub.bin).', 'info');
       }
     }
