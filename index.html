@@ -1939,16 +1939,14 @@
                 <span class="dot" id="terminalStatusDot"></span>
                 <span id="terminalStatusText">Web Serial Console — Sẵn sàng</span>
               </div>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">ESP32 CYD 2.8"</span>
+              <span id="terminalBoardTag" style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">ESP32-S3 & CYD 2.8"</span>
             </div>
 
-            <div class="console-body" id="terminalOutput">
-[DimoHub Web Flasher] Khởi tạo môi trường Web Serial...
-[Hướng dẫn] Nhấn nút "⚡ Kết Nối & Nạp Firmware" để bắt đầu.
-Trình duyệt yêu cầu: Google Chrome hoặc Microsoft Edge (Desktop/Android OTG).
-File nạp: esp32-cyd-dimohub.bin (Offset: 0x10000)
-Màn hình tương thích: ESP32 CYD 2.8 inch (ESP32-2432S028R).
-            </div>
+            <div class="console-body" id="terminalOutput">[DimoHub Web Flasher] Khởi tạo môi trường Web Serial...
+[Hỗ trợ bo mạch]
+  • Board mới: ESP32-S3 ES3C28P (Capacitive Touch - esp32s3-ES3C28P.bin)
+  • Board CYD: ESP32-2432S028R (Resistive Touch - esp32-cyd-dimohub.bin)
+[Hướng dẫn] Chọn bo mạch bên trên và nhấn "⚡ Kết Nối & Nạp Firmware" (Offset: 0x10000).</div>
 
             <div class="progress-container" id="progressContainer">
               <div class="progress-info">
@@ -2119,9 +2117,11 @@ Màn hình tương thích: ESP32 CYD 2.8 inch (ESP32-2432S028R).
 
         <ul class="footer-links">
           <li><a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener">Google Play</a></li>
-          <li><a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener">Mua Sản Phẩm</a></li>
+          <li><a href="https://s.shopee.vn/3B83Ot3kh5" target="_blank" rel="noopener">Mua Board S3</a></li>
+          <li><a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener">Mua Board CYD</a></li>
           <li><a href="#flasher">Nạp Firmware</a></li>
-          <li><a href="esp32-cyd-dimohub.bin" download>Tải File .BIN</a></li>
+          <li><a href="esp32s3-ES3C28P.bin" download>FW ESP32-S3 (.bin)</a></li>
+          <li><a href="esp32-cyd-dimohub.bin" download>FW CYD (.bin)</a></li>
           <li><a href="#" class="btnOpenCoffeeModal" style="color: #fbbf24;">☕ Mời Cà Phê</a></li>
         </ul>
       </div>
