@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DimoHub — Trợ Lý Lái Xe & Màn Hình HUD Taplo Thông Minh</title>
+  <meta name="description" content="Ứng dụng DimoHub cảnh báo tốc độ thời gian thực, dẫn đường Waze Mod, cảnh báo camera phạt nguội và kết nối màn hình ngoài ESP32 CYD 2.8 inch không dây.">
+  <meta name="keywords" content="DimoHub, ESP32 CYD, Cheap Yellow Display, Waze Mod, HUD xe hoi, canh bao toc do, camera phat nguoi">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/logo_feathered.png">
+
+  <!-- ESP Web Tools Module (Official 1-Click Flasher) -->
+  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+
+  <style>
+    :root {
+      --bg-dark: #070b12;
+      --bg-card: #0f1726;
+      --bg-card-hover: #162238;
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(0, 210, 255, 0.3);
+      --primary: #00d2ff;
+      --primary-glow: rgba(0, 210, 255, 0.25);
+      --accent: #3b82f6;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      --shopee: #ee4d2d;
+      --shopee-hover: #ff5722;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(0, 210, 255, 0.06) 0%, transparent 40%),
+        radial-gradient(circle at 85% 65%, rgba(59, 130, 246, 0.07) 0%, transparent 45%);
+      background-attachment: fixed;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Navigation */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(7, 11, 18, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+
+    .brand img {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .brand span {
+      background: linear-gradient(135deg, #fff 40%, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: none;
+      text-align: center;
+    }
+
+    .btn-sm {
+      padding: 8px 16px;
+      font-size: 0.85rem;
+    }
+
+    .btn-lg {
+      padding: 14px 28px;
+      font-size: 1.05rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #00d2ff 0%, #0077ff 100%);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(0, 210, 255, 0.35);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 24px rgba(0, 210, 255, 0.55);
+      transform: translateY(-2px);
+    }
+
+    .btn-shopee {
+      background: linear-gradient(135deg, var(--shopee) 0%, #d73211 100%);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(238, 77, 45, 0.35);
+    }
+
+    .btn-shopee:hover {
+      box-shadow: 0 6px 24px rgba(238, 77, 45, 0.55);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .btn-flash {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn-flash:hover {
+      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.55);
+      transform: translateY(-2px);
+    }
+
+    .btn-coffee {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+    }
+
+    .btn-coffee:hover {
+      background: rgba(245, 158, 11, 0.22);
+      border-color: #f59e0b;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Support Banner */
+    .support-banner {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.6) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 30px 36px;
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .support-text h4 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .support-text p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      line-height: 1.6;
+    }
+
+    /* Coffee / Donate Modal */
+    .coffee-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(10px);
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .coffee-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .coffee-modal {
+      background: #0d1322;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: var(--radius-lg);
+      max-width: 420px;
+      width: 100%;
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(245, 158, 11, 0.15);
+      transform: translateY(20px) scale(0.96);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .coffee-modal-overlay.active .coffee-modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: var(--text-muted);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      transition: all 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .qr-container {
+      background: #fff;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      display: inline-block;
+      margin: 18px 0 14px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .qr-container img {
+      width: 100%;
+      max-width: 230px;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+    }
+
+    .bank-info-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .bank-info-box .acc-num {
+      font-family: monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0 60px;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(0, 210, 255, 0.1);
+      border: 1px solid var(--border-accent);
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-size: 3.2rem;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+    }
+
+    .hero-title .highlight {
+      background: linear-gradient(135deg, #00d2ff 0%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      max-width: 580px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .playstore-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 22px;
+      background: #000;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: var(--radius-md);
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .playstore-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 25px rgba(0, 210, 255, 0.3);
+    }
+
+    .playstore-btn svg {
+      width: 30px;
+      height: 30px;
+      flex-shrink: 0;
+    }
+
+    .playstore-text {
+      text-align: left;
+    }
+
+    .playstore-text .sub {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      color: #94a3b8;
+      display: block;
+      line-height: 1.2;
+    }
+
+    .playstore-text .main {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .stat-item h4 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-item p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Hero Media Visual */
+    .hero-visual {
+      position: relative;
+    }
+
+    .hero-mockup-card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    .hero-mockup-card img.main-img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-md);
+      display: block;
+    }
+
+    .floating-cyd-badge {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(15, 23, 38, 0.95);
+      border: 1px solid var(--border-accent);
+      backdrop-filter: blur(12px);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      max-width: 280px;
+    }
+
+    .floating-cyd-badge img {
+      width: 65px;
+      height: 65px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .floating-cyd-badge h5 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .floating-cyd-badge p {
+      font-size: 0.78rem;
+      color: var(--primary);
+    }
+
+    /* Section Global */
+    .section {
+      padding: 80px 0;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 56px;
+    }
+
+    .section-badge {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: 2.3rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+    }
+
+    /* App Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 210, 255, 0.12);
+    }
+
+    .feature-media {
+      position: relative;
+      background: #000;
+      overflow: hidden;
+      aspect-ratio: 9/16;
+      max-height: 380px;
+    }
+
+    .feature-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .feature-card:hover .feature-media img {
+      transform: scale(1.03);
+    }
+
+    .feature-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature-body h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .feature-body p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .feature-tag {
+      margin-top: auto;
+      padding-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    /* CYD Hardware Showcase Section */
+    .cyd-section {
+      background: linear-gradient(180deg, rgba(15, 23, 38, 0.4) 0%, rgba(7, 11, 18, 0.9) 100%);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .cyd-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .cyd-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .cyd-main-view {
+      background: #000;
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+      text-align: center;
+    }
+
+    .cyd-main-view img {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--radius-md);
+      display: block;
+      margin: 0 auto;
+    }
+
+    .cyd-screen-view {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .cyd-screen-view img {
+      width: 160px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .cyd-screen-view div h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .cyd-screen-view div p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .cyd-details h2 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .cyd-details p.lead {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .spec-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .spec-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .spec-item .label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: block;
+    }
+
+    .spec-item .value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Important Note Banner */
+    .note-box {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-left: 4px solid var(--warning);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 28px;
+    }
+
+    .note-box h4 {
+      color: var(--warning);
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .note-box p {
+      font-size: 0.92rem;
+      color: #fde68a;
+      line-height: 1.5;
+    }
+
+    /* Flasher Tool Section */
+    .flasher-section {
+      padding: 80px 0;
+    }
+
+    .flasher-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .flasher-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+    }
+
+    .flasher-controls h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .flasher-controls p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .steps-list {
+      list-style: none;
+      counter-reset: step-counter;
+      margin-bottom: 28px;
+    }
+
+    .step-item {
+      counter-increment: step-counter;
+      position: relative;
+      padding-left: 42px;
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+      color: var(--text-main);
+    }
+
+    .step-item::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 0;
+      top: -2px;
+      width: 28px;
+      height: 28px;
+      background: rgba(0, 210, 255, 0.15);
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .flasher-form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-bottom: 24px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      background: #0a0e17;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    .flasher-buttons-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    /* ESP Web Tools Custom Button Styling */
+    esp-web-install-button {
+      display: inline-block;
+    }
+
+    /* Flasher Console Output */
+    .console-box {
+      background: #05080e;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 420px;
+      overflow: hidden;
+    }
+
+    .console-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .console-header .title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .console-header .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .console-body {
+      padding: 16px;
+      font-family: "SF Mono", Monaco, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 0.82rem;
+      color: #a7f3d0;
+      overflow-y: auto;
+      flex: 1;
+      max-height: 330px;
+      white-space: pre-wrap;
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    .console-body .log-info { color: #93c5fd; }
+    .console-body .log-warn { color: #fde047; }
+    .console-body .log-error { color: #f87171; }
+    .console-body .log-success { color: #4ade80; font-weight: bold; }
+
+    /* Progress bar */
+    .progress-container {
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.5);
+      border-top: 1px solid var(--border-color);
+      display: none;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #1e293b;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00d2ff, #10b981);
+      transition: width 0.15s ease;
+    }
+
+    /* Product Shop Section */
+    .shop-section {
+      background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(15, 23, 38, 0.8) 100%);
+      padding: 80px 0;
+    }
+
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 0.95fr 1.05fr;
+      gap: 48px;
+      align-items: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(238, 77, 45, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .product-gallery {
+      position: relative;
+      text-align: center;
+    }
+
+    .product-gallery img {
+      width: 100%;
+      max-width: 440px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .product-badge-float {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: var(--shopee);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 999px;
+      box-shadow: 0 4px 15px rgba(238, 77, 45, 0.5);
+    }
+
+    .product-info h3 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .product-info p.desc {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .package-includes {
+      list-style: none;
+      margin-bottom: 28px;
+    }
+
+    .package-includes li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+
+    .package-includes li svg {
+      width: 20px;
+      height: 20px;
+      color: var(--success);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .product-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border-color);
+      background: #04070c;
+      padding: 50px 0 30px;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 30px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-brand img {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .hero-grid,
+      .cyd-grid,
+      .flasher-layout,
+      .product-card {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+
+      .hero-title {
+        font-size: 2.6rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .flasher-card {
+        padding: 24px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-title {
+        font-size: 2.1rem;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .spec-list {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .hero-buttons a,
+      .hero-buttons button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#" class="brand">
+          <img src="assets/logo_feathered.png" alt="DimoHub Logo">
+          <span>DimoHub</span>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="#features">Tính Năng App</a></li>
+          <li><a href="#cyd-display">Màn Hình CYD 2.8"</a></li>
+          <li><a href="#flasher">Nạp Firmware</a></li>
+          <li><a href="#shop">Mua Sản Phẩm</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="btn btn-coffee btn-sm btnOpenCoffeeModal" title="Mời tác giả ly cà phê">☕ Mời Cà Phê</button>
+          <a href="#flasher" class="btn btn-outline btn-sm">⚡ Nạp FW</a>
+          <a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+            Tải App
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-text">
+          <div class="badge-tag">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            HỆ SINH THÁI LÁI XE AN TOÀN TOÀN DIỆN
+          </div>
+
+          <h1 class="hero-title">
+            Trợ Lý Lái Xe & <br>
+            <span class="highlight">Màn Hình HUD Taplo</span> Thông Minh
+          </h1>
+
+          <p class="hero-desc">
+            Cảnh báo tốc độ GPS thời gian thực, đồng bộ chỉ đường Waze Mod, cảnh báo camera phạt nguội và kết nối không dây màn hình phụ taplo <strong>ESP32 CYD 2.8 inch</strong> qua Bluetooth BLE.
+          </p>
+
+          <div class="hero-buttons">
+            <!-- Google Play Store Button -->
+            <a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener" class="playstore-btn">
+              <svg viewBox="0 0 512 512">
+                <path fill="#4285F4" d="M32.5 12.8C25.3 20.3 21 31.9 21 46.5v419c0 14.6 4.3 26.2 11.5 33.7l1.7 1.7 234.6-234.6v-5.6L34.2 11.1l-1.7 1.7z"/>
+                <path fill="#FBBC04" d="M346.5 331.6l-77.7-77.7v-5.6l77.7-77.7 2.1 1.2 92.1 52.3c26.3 14.9 26.3 39.4 0 54.3l-92.1 52.3-2.1 1.2z"/>
+                <path fill="#EA4335" d="M348.6 330.4L268.8 250.6 32.5 486.9c8.6 9.1 22.8 10.3 38.6 1.3l277.5-157.8"/>
+                <path fill="#34A853" d="M348.6 173.6L71.1 15.8C55.3 6.8 41.1 8 32.5 17.1l236.3 236.3 79.8-79.8z"/>
+              </svg>
+              <div class="playstore-text">
+                <span class="sub">Tải miễn phí trên</span>
+                <span class="main">Google Play</span>
+              </div>
+            </a>
+
+            <!-- Mua Sản Phẩm Button -->
+            <a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener" class="btn btn-shopee btn-lg">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              Mua Màn Hình CYD 2.8"
+            </a>
+
+            <!-- Nạp FW Button -->
+            <a href="#flasher" class="btn btn-outline btn-lg">
+              ⚡ Nạp Firmware CYD
+            </a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <h4>0đ</h4>
+              <p>Miễn phí 100% không quảng cáo</p>
+            </div>
+            <div class="stat-item">
+              <h4>&lt; 50ms</h4>
+              <p>Đồng bộ BLE siêu tốc thời gian thực</p>
+            </div>
+            <div class="stat-item">
+              <h4>2.8 Inch</h4>
+              <p>Kích thước màn hình CYD tối ưu</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-mockup-card">
+            <img src="assets/ai_s1_final.jpg" alt="DimoHub trong buồng lái xe hơi" class="main-img">
+            
+            <div class="floating-cyd-badge">
+              <img src="cyd.jpeg" alt="Màn hình CYD 2.8 inch DimoHub">
+              <div>
+                <h5>ESP32 CYD 2.8"</h5>
+                <p>Màn hình taplo độc lập chạy DimoHub</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Features Section -->
+  <section id="features" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Tính Năng Ưu Việt</span>
+        <h2 class="section-title">Đồng Hành An Toàn Trên Mọi Cung Đường</h2>
+        <p class="section-subtitle">
+          DimoHub kết hợp sức mạnh thuật toán định vị GPS, đồng bộ Waze Mod và truyền dữ liệu BLE không dây đến màn hình ngoài.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <!-- Feature 1 -->
+        <div class="feature-card">
+          <div class="feature-media">
+            <img src="assets/ai_s2_final.jpg" alt="Cảnh báo vượt tốc độ DimoHub">
+          </div>
+          <div class="feature-body">
+            <h3>Cảnh Báo Vượt Tốc Độ Tức Thì</h3>
+            <p>
+              Tự động nhận diện biển giới hạn tốc độ cung đường. Khi bạn vượt quá tốc độ, giao diện lập tức chuyển sang chế độ đỏ nhấp nháy cảnh báo trực quan.
+            </p>
+            <div class="feature-tag">
+              <span>● Chuẩn xác theo GPS vệ tinh</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card">
+          <div class="feature-media">
+            <img src="assets/ai_s3_final.jpg" alt="Chỉ đường và cảnh báo camera HUD">
+          </div>
+          <div class="feature-body">
+            <h3>Chỉ Đường & Cảnh Báo Camera HUD</h3>
+            <p>
+              Đồng bộ dữ liệu lộ trình từ Waze Mod: hướng rẽ, khoảng cách đến chỗ rẽ, vòng xuyến (số lối ra) cùng cảnh báo trước Camera bắn tốc độ & phạt nguội.
+            </p>
+            <div class="feature-tag">
+              <span>● Đồng bộ Waze Mod IPC HLP/1</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="feature-card">
+          <div class="feature-media">
+            <img src="assets/ai_s4_final.jpg" alt="Bản đồ số địa hình Việt Nam">
+          </div>
+          <div class="feature-body">
+            <h3>Bản Đồ Số Địa Hình Toàn Diện</h3>
+            <p>
+              Tích hợp bản đồ số vệ tinh và địa hình trực quan, hiển thị mật độ giao thông, vị trí xe thời gian thực giúp định hướng hành trình thông suốt.
+            </p>
+            <div class="feature-tag">
+              <span>● Dữ liệu bản đồ chi tiết Việt Nam</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="feature-card">
+          <div class="feature-media" style="aspect-ratio: 16/9; max-height: 380px;">
+            <img src="assets/s1.jpg" alt="Giao diện HUD lái xe tự do">
+          </div>
+          <div class="feature-body">
+            <h3>Chế Độ HUD Kính Lái & Bong Bóng Nổi</h3>
+            <p>
+              Tùy biến lật ngược hình ảnh (Flip HUD) để phản chiếu lên kính chắn gió ban đêm, hoặc bật Bong bóng tốc độ nổi (Floating Bubble) đè trên Google Maps.
+            </p>
+            <div class="feature-tag">
+              <span>● Đa nhiệm không ngắt quãng</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CYD Hardware Section -->
+  <section id="cyd-display" class="section cyd-section">
+    <div class="container">
+      <div class="cyd-grid">
+        <div class="cyd-gallery">
+          <div class="cyd-main-view">
+            <img src="cyd.jpeg" alt="ESP32 Cheap Yellow Display nạp DimoHub">
+          </div>
+          <div class="cyd-screen-view">
+            <img src="s1.jpg" alt="Giao diện DimoHub trên màn hình">
+            <div>
+              <h4>Đồng bộ dữ liệu hoàn hảo</h4>
+              <p>Tốc độ hiện tại, tốc độ cho phép, tên đường (Lê Đức Thọ), cự ly camera phạt nguội và tình trạng pin điện thoại.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="cyd-details">
+          <span class="section-badge">PHẦN CỨNG ĐỘC LẬP</span>
+          <h2>Màn Hình Phụ Taplo ESP32 CYD 2.8 Inch</h2>
+          <p class="lead">
+            Biến chiếc bo mạch hiển thị <strong>ESP32-2432S028R (Cheap Yellow Display)</strong> thành một chiếc màn hình HUD Taplo chuyên nghiệp đặt ngay trước vô lăng ô tô hoặc đầu xe máy.
+          </p>
+
+          <!-- Important Note -->
+          <div class="note-box">
+            <h4>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              LƯU Ý QUAN TRỌNG KHI MUA HOẶC NẠP BO MẠCH
+            </h4>
+            <p>
+              Vui lòng chọn đúng <strong>màn hình loại 2.8 inch</strong> (Mã sản phẩm <strong>ESP32-2432S028R</strong>). Firmware DimoHub được xây dựng và căn chỉnh chính xác theo độ phân giải màn hình 240x320 pixel và chip điều khiển cảm ứng của dòng 2.8 inch!
+            </p>
+          </div>
+
+          <ul class="spec-list">
+            <li class="spec-item">
+              <span class="label">Kích thước màn hình</span>
+              <span class="value">2.8 Inch TFT Màu</span>
+            </li>
+            <li class="spec-item">
+              <span class="label">Độ phân giải</span>
+              <span class="value">240 × 320 Pixels</span>
+            </li>
+            <li class="spec-item">
+              <span class="label">Vi xử lý</span>
+              <span class="value">ESP32 Dual-Core</span>
+            </li>
+            <li class="spec-item">
+              <span class="label">Cổng kết nối</span>
+              <span class="value">USB Type-C (Nguồn & Flash)</span>
+            </li>
+            <li class="spec-item">
+              <span class="label">Kết nối không dây</span>
+              <span class="value">Bluetooth Low Energy (BLE)</span>
+            </li>
+            <li class="spec-item">
+              <span class="label">Ưu điểm vượt trội</span>
+              <span class="value">Không nóng máy điện thoại</span>
+            </li>
+          </ul>
+
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener" class="btn btn-shopee btn-lg">
+              🛒 Đặt Mua Màn Hình 2.8" Trên Shopee
+            </a>
+            <a href="#flasher" class="btn btn-outline btn-lg">
+              ⚡ Nạp Firmware Cho CYD
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Firmware Flasher Section -->
+  <section id="flasher" class="section flasher-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">CÔNG CỤ TRÌNH DUYỆT TRỰC TIẾP</span>
+        <h2 class="section-title">Nạp Firmware Cho Màn Hình ESP32 CYD 2.8"</h2>
+        <p class="section-subtitle">
+          Nạp trực tiếp file firmware <code>esp32-cyd-dimohub.bin</code> qua trình duyệt Web Serial (Google Chrome / Microsoft Edge) mà không cần cài đặt phần mềm IDE phức tạp.
+        </p>
+      </div>
+
+      <div class="flasher-card">
+        <div class="flasher-layout">
+          <!-- Controls Column -->
+          <div class="flasher-controls">
+            <h3>⚡ Hướng Dẫn Nạp Firmware Chỉ Với 3 Bước</h3>
+            
+            <ol class="steps-list">
+              <li class="step-item">
+                <strong>Cắm cáp USB Type-C:</strong> Nối cổng USB trên màn hình CYD 2.8" vào cổng USB của máy tính (dùng cáp truyền dữ liệu, không dùng cáp chỉ sạc).
+              </li>
+              <li class="step-item">
+                <strong>Chọn cổng kết nối:</strong> Bấm nút <em>"⚡ Kết Nối & Nạp Firmware"</em> bên dưới và chọn cổng Serial COM của bo mạch ESP32.
+              </li>
+              <li class="step-item">
+                <strong>Tự động ghi flash:</strong> Trình duyệt sẽ tự động tải file <code>esp32-cyd-dimohub.bin</code> và nạp vào địa chỉ <code>0x10000</code>. Khi nạp đạt 100%, màn hình CYD sẽ tự khởi động và hiển thị logo DimoHub!
+              </li>
+            </ol>
+
+            <div class="flasher-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="baudRateSelect">Tốc độ Baud (Baudrate):</label>
+                  <select id="baudRateSelect" class="form-control">
+                    <option value="460800" selected>460,800 (Khuyên dùng - Nhanh)</option>
+                    <option value="115200">115,200 (Tiêu chuẩn an toàn)</option>
+                    <option value="921600">921,600 (Siêu tốc)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="flashOffset">Địa chỉ Offset:</label>
+                  <input type="text" id="flashOffset" class="form-control" value="0x10000" title="Địa chỉ nạp phân vùng App ESP-IDF mặc định là 0x10000">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>File Firmware:</label>
+                <div style="display: flex; align-items: center; justify-content: space-between; background: #070b12; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                  <span style="font-size: 0.9rem; color: #fff; display: flex; align-items: center; gap: 8px;">
+                    📄 <strong>esp32-cyd-dimohub.bin</strong> (1.31 MB)
+                  </span>
+                  <a href="esp32-cyd-dimohub.bin" download class="btn btn-outline btn-sm" title="Tải file .bin về máy">
+                    📥 Tải File .BIN
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flasher-buttons-row">
+              <!-- Custom Web Serial Interactive Flasher Button -->
+              <button id="btnStartFlash" class="btn btn-flash btn-lg">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                ⚡ Kết Nối & Nạp Firmware
+              </button>
+
+              <!-- Official ESP Web Tools Button -->
+              <esp-web-install-button manifest="manifest.json">
+                <button slot="activate" class="btn btn-primary btn-lg" title="Nạp 1-click chuẩn ESP Web Tools">
+                  🌐 Nạp 1-Click (ESP Web Tools)
+                </button>
+                <span slot="unsupported" style="color: var(--danger); font-size: 0.85rem; display: block; margin-top: 8px;">
+                  ⚠️ Trình duyệt chưa hỗ trợ Web Serial. Hãy dùng Google Chrome hoặc Microsoft Edge trên máy tính.
+                </span>
+              </esp-web-install-button>
+
+              <button id="btnClearConsole" class="btn btn-outline btn-sm" style="margin-left: auto;">
+                🧹 Xóa Log
+              </button>
+            </div>
+
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 14px;">
+              * <em>Mẹo kỹ thuật:</em> Nếu bấm kết nối mà báo không tìm thấy thiết bị, hãy cắm lại cáp và nhấn giữ nút <strong>BOOT</strong> trên bo mạch khoảng 2 giây, hoặc kiểm tra xem máy tính đã cài driver <strong>CH340</strong> / <strong>CP2102</strong> chưa.
+            </p>
+          </div>
+
+          <!-- Console Terminal Column -->
+          <div class="console-box">
+            <div class="console-header">
+              <div class="title">
+                <span class="dot" id="terminalStatusDot"></span>
+                <span id="terminalStatusText">Web Serial Console — Sẵn sàng</span>
+              </div>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">ESP32 CYD 2.8"</span>
+            </div>
+
+            <div class="console-body" id="terminalOutput">
+[DimoHub Web Flasher] Khởi tạo môi trường Web Serial...
+[Hướng dẫn] Nhấn nút "⚡ Kết Nối & Nạp Firmware" để bắt đầu.
+Trình duyệt yêu cầu: Google Chrome hoặc Microsoft Edge (Desktop/Android OTG).
+File nạp: esp32-cyd-dimohub.bin (Offset: 0x10000)
+Màn hình tương thích: ESP32 CYD 2.8 inch (ESP32-2432S028R).
+            </div>
+
+            <div class="progress-container" id="progressContainer">
+              <div class="progress-info">
+                <span id="progressStatus">Đang nạp firmware...</span>
+                <span id="progressPercentage">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Product Shop Section -->
+  <section id="shop" class="section shop-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">MUA SẢN PHẨM PHẦN CỨNG</span>
+        <h2 class="section-title">Đặt Mua Màn Hình ESP32 CYD 2.8 Inch</h2>
+        <p class="section-subtitle">
+          Trang bị ngay màn hình HUD Taplo thông minh cho xế yêu của bạn với link đặt hàng chính hãng giá ưu đãi nhất.
+        </p>
+      </div>
+
+      <div class="product-card">
+        <div class="product-gallery">
+          <span class="product-badge-float">Shopee Mall / Yêu Thích</span>
+          <img src="cyd.jpeg" alt="Màn hình CYD 2.8 inch DimoHub">
+        </div>
+
+        <div class="product-info">
+          <h3>Màn Hình Taplo DimoHub CYD 2.8"</h3>
+          <p class="desc">
+            Bo mạch hiển thị màu cảm ứng <strong>ESP32-2432S028R</strong> tích hợp chip ESP32 mạnh mẽ, tự động kết nối Bluetooth BLE với ứng dụng DimoHub trên điện thoại khi bạn lên xe.
+          </p>
+
+          <!-- Important Note for Buyers -->
+          <div class="note-box" style="margin-bottom: 24px;">
+            <h4>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              LƯU Ý KHI ĐẶT HÀNG TRÊN SHOPEE
+            </h4>
+            <p>
+              Khi vào link Shopee, quý khách vui lòng chọn phân loại <strong>màn hình loại 2.8 inch</strong> (ESP32-2432S028). Đây là phiên bản được tối ưu tương thích tốt nhất với Firmware DimoHub!
+            </p>
+          </div>
+
+          <ul class="package-includes">
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Màn hình màu TFT 2.8 inch cảm ứng</strong> sắc nét, góc nhìn rộng, độ tương phản cao.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Tích hợp vi xử lý ESP32 Dual-Core</strong> có Bluetooth BLE & Wi-Fi băng thông rộng.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Có sẵn loa buzzer / khe thẻ nhớ MicroSD</strong> và cổng cấp nguồn USB Type-C tiện lợi.</span>
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              <span><strong>Hỗ trợ nạp Firmware DimoHub trọn đời</strong> chỉ bằng 1 cú nhấp chuột trực tiếp trên trang web.</span>
+            </li>
+          </ul>
+
+          <div class="product-actions">
+            <!-- Shopee Direct Purchase Link -->
+            <a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener" class="btn btn-shopee btn-lg">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+              Mua Ngay Trên Shopee (Link 2.8 Inch)
+            </a>
+
+            <a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+              📲 Tải App Android
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Support / Buy Me A Coffee Subtle Banner -->
+      <div class="support-banner">
+        <div class="support-text">
+          <h4>☕ Mời Tác Giả Một Ly Cà Phê</h4>
+          <p>
+            DimoHub là dự án được phát triển vì cộng đồng, <strong>100% miễn phí & không có quảng cáo</strong>. Nếu ứng dụng và firmware giúp ích cho bạn trên các cung đường, hãy mời tác giả một ly cà phê để tiếp thêm năng lượng thức đêm hoàn thiện những tính năng mới nhé!
+          </p>
+        </div>
+        <button class="btn btn-coffee btn-lg btnOpenCoffeeModal">
+          ☕ Mời Tác Giả Ly Cà Phê
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Coffee / Donate Modal Dialog -->
+  <div class="coffee-modal-overlay" id="coffeeModalOverlay">
+    <div class="coffee-modal">
+      <button class="modal-close-btn" id="btnCloseCoffeeModal" title="Đóng">&times;</button>
+      
+      <div style="font-size: 2.4rem; margin-bottom: 6px;">☕</div>
+      <h3 style="color: #fff; font-size: 1.35rem; font-weight: 800; margin-bottom: 6px;">Mời Tác Giả Ly Cà Phê</h3>
+      <p style="color: var(--text-muted); font-size: 0.88rem; line-height: 1.5;">
+        Cảm ơn bạn đã luôn ủng hộ DimoHub! Một ly cà phê ấm lòng là nguồn động lực to lớn giúp tác giả tiếp tục cập nhật và duy trì hệ sinh thái miễn phí cho cộng đồng.
+      </p>
+
+      <div class="qr-container">
+        <img src="assets/tech_donate.jpg" alt="Mã VietQR Techcombank Vũ Đặng Tỉnh">
+      </div>
+
+      <div class="bank-info-box">
+        <div>
+          <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase;">Techcombank • Napas 247</div>
+          <div class="acc-num" id="bankAccNum">1903 6442 3720 18</div>
+          <div style="font-size: 0.82rem; color: #cbd5e1; font-weight: 600;">VU DANG TINH</div>
+        </div>
+        <button class="btn btn-outline btn-sm" id="btnCopyAcc" style="padding: 8px 12px; font-size: 0.8rem; border-color: rgba(245, 158, 11, 0.4); color: #fbbf24;">
+          📋 Sao chép STK
+        </button>
+      </div>
+
+      <p style="font-size: 0.76rem; color: #64748b; margin-top: 14px;">
+        Chúc bạn luôn có những chuyến đi vạn dặm bình an! ❤️
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <img src="assets/logo_feathered.png" alt="DimoHub Logo">
+          <div>
+            <h4 style="color: #fff; font-size: 1.1rem; font-weight: 800;">DimoHub</h4>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Smart Driving Assistant & CYD HUD Display</p>
+          </div>
+        </div>
+
+        <ul class="footer-links">
+          <li><a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener">Google Play</a></li>
+          <li><a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener">Mua Sản Phẩm</a></li>
+          <li><a href="#flasher">Nạp Firmware</a></li>
+          <li><a href="esp32-cyd-dimohub.bin" download>Tải File .BIN</a></li>
+          <li><a href="#" class="btnOpenCoffeeModal" style="color: #fbbf24;">☕ Mời Cà Phê</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 DimoHub — Phát triển bởi Đặng Tỉnh. Đồng hành tin cậy trên mọi cung đường Việt Nam.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Web Serial Flasher Script -->
+  <script type="module">
+    import { ESPLoader, Transport } from './js/esptool.js';
+
+    const terminalOutput = document.getElementById('terminalOutput');
+    const terminalStatusText = document.getElementById('terminalStatusText');
+    const terminalStatusDot = document.getElementById('terminalStatusDot');
+    const btnStartFlash = document.getElementById('btnStartFlash');
+    const btnClearConsole = document.getElementById('btnClearConsole');
+    const baudRateSelect = document.getElementById('baudRateSelect');
+    const flashOffsetInput = document.getElementById('flashOffset');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressStatus = document.getElementById('progressStatus');
+    const progressPercentage = document.getElementById('progressPercentage');
+    const progressFill = document.getElementById('progressFill');
+
+    function log(message, type = 'info') {
+      const span = document.createElement('span');
+      span.className = `log-${type}`;
+      span.textContent = message + '\n';
+      terminalOutput.appendChild(span);
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+
+    btnClearConsole.addEventListener('click', () => {
+      terminalOutput.textContent = '';
+      log('[DimoHub Web Flasher] Đã dọn dẹp log.', 'info');
+    });
+
+    const customTerminal = {
+      clean() {
+        terminalOutput.textContent = '';
+      },
+      writeLine(data) {
+        log(data, 'info');
+      },
+      write(data) {
+        // If data contains progress or chunk
+        const span = document.createElement('span');
+        span.className = 'log-info';
+        span.textContent = data;
+        terminalOutput.appendChild(span);
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+      }
+    };
+
+    btnStartFlash.addEventListener('click', async () => {
+      if (!('serial' in navigator)) {
+        alert('Trình duyệt của bạn hiện chưa hỗ trợ Web Serial API!\n\nVui lòng mở trang web này bằng Google Chrome hoặc Microsoft Edge trên máy tính để thực hiện nạp firmware trực tiếp.');
+        log('LỖI: Trình duyệt không hỗ trợ Web Serial API. Hãy dùng Google Chrome hoặc Microsoft Edge!', 'error');
+        return;
+      }
+
+      btnStartFlash.disabled = true;
+      terminalStatusDot.style.background = '#f59e0b';
+      terminalStatusDot.style.boxShadow = '0 0 8px #f59e0b';
+      terminalStatusText.textContent = 'Đang yêu cầu kết nối cổng Serial...';
+      progressContainer.style.display = 'block';
+      progressFill.style.width = '0%';
+      progressPercentage.textContent = '0%';
+      progressStatus.textContent = 'Đang kết nối thiết bị...';
+
+      let port = null;
+      let transport = null;
+      let esploader = null;
+
+      try {
+        log('\n--- BẮT ĐẦU QUÁ TRÌNH NẠP FIRMWARE CYD 2.8" ---', 'warn');
+        log('1. Đang mở hộp thoại chọn cổng Serial COM...', 'info');
+
+        port = await navigator.serial.requestPort();
+        transport = new Transport(port, true);
+
+        const baudrate = parseInt(baudRateSelect.value) || 460800;
+        log(`2. Khởi tạo kết nối với tốc độ baud: ${baudrate}...`, 'info');
+
+        esploader = new ESPLoader({
+          transport: transport,
+          baudrate: baudrate,
+          romBaudrate: 115200,
+          terminal: customTerminal
+        });
+
+        terminalStatusText.textContent = 'Đang đồng bộ chip ESP32...';
+        log('3. Đang đồng bộ và nhận diện vi xử lý ESP32...', 'info');
+        const chip = await esploader.main();
+        log(`-> Nhận diện chip thành công: ${chip}`, 'success');
+
+        const mac = await esploader.chip.readMac(esploader);
+        log(`-> Địa chỉ MAC thiết bị: ${mac}`, 'info');
+
+        // Fetch firmware file
+        terminalStatusText.textContent = 'Đang tải file esp32-cyd-dimohub.bin...';
+        progressStatus.textContent = 'Đang tải firmware từ máy chủ...';
+        log('4. Đang nạp dữ liệu firmware: esp32-cyd-dimohub.bin...', 'info');
+
+        const fwResponse = await fetch('esp32-cyd-dimohub.bin');
+        if (!fwResponse.ok) {
+          throw new Error(`Không thể tải file firmware (HTTP ${fwResponse.status})`);
+        }
+
+        const fwBlob = await fwResponse.blob();
+        log(`-> Kích thước firmware: ${(fwBlob.size / 1024).toFixed(1)} KB`, 'info');
+
+        const binaryString = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsBinaryString(fwBlob);
+        });
+
+        // Parse offset
+        let offsetStr = flashOffsetInput.value.trim();
+        let offset = 0x10000;
+        if (offsetStr.startsWith('0x') || offsetStr.startsWith('0X')) {
+          offset = parseInt(offsetStr, 16);
+        } else {
+          offset = parseInt(offsetStr, 10);
+        }
+        if (isNaN(offset)) offset = 0x10000;
+
+        log(`5. Đang ghi Flash vào địa chỉ 0x${offset.toString(16).toUpperCase()}...`, 'warn');
+        terminalStatusText.textContent = 'Đang ghi dữ liệu vào Flash...';
+        progressStatus.textContent = 'Đang ghi flash...';
+
+        const fileArray = [{
+          data: binaryString,
+          address: offset
+        }];
+
+        await esploader.writeFlash({
+          fileArray: fileArray,
+          flashSize: 'keep',
+          eraseAll: false,
+          compress: true,
+          reportProgress: (fileIndex, written, total) => {
+            const pct = Math.min(100, Math.round((written / total) * 100));
+            progressFill.style.width = pct + '%';
+            progressPercentage.textContent = pct + '%';
+            progressStatus.textContent = `Đang ghi: ${pct}% (${(written / 1024).toFixed(0)} / ${(total / 1024).toFixed(0)} KB)`;
+          }
+        });
+
+        progressFill.style.width = '100%';
+        progressPercentage.textContent = '100%';
+        progressStatus.textContent = 'Nạp hoàn tất!';
+        terminalStatusDot.style.background = '#10b981';
+        terminalStatusDot.style.boxShadow = '0 0 8px #10b981';
+        terminalStatusText.textContent = 'Nạp thành công!';
+
+        log('\n🎉 CHÚC MỪNG: NẠP FIRMWARE DIMOHUB CHO CYD 2.8" HOÀN TẤT 100%!', 'success');
+        log('Thiết bị đang khởi động lại. Hãy mở ứng dụng DimoHub trên điện thoại và bật kết nối BLE để trải nghiệm!', 'success');
+
+        // Reset ESP32
+        try {
+          await esploader.hardReset();
+        } catch (e) {
+          // Hard reset can disconnect
+        }
+
+      } catch (err) {
+        log(`\n❌ LỖI TRONG QUÁ TRÌNH NẠP: ${err.message || err}`, 'error');
+        terminalStatusDot.style.background = '#ef4444';
+        terminalStatusDot.style.boxShadow = '0 0 8px #ef4444';
+        terminalStatusText.textContent = 'Có lỗi xảy ra!';
+        progressStatus.textContent = 'Lỗi nạp firmware!';
+      } finally {
+        if (transport) {
+          try {
+            await transport.disconnect();
+          } catch (e) {}
+        }
+        btnStartFlash.disabled = false;
+      }
+    });
+
+    // Coffee / Donate Modal Interactions
+    const coffeeModalOverlay = document.getElementById('coffeeModalOverlay');
+    const btnCloseCoffeeModal = document.getElementById('btnCloseCoffeeModal');
+    const btnCopyAcc = document.getElementById('btnCopyAcc');
+    const bankAccNum = '19036442372018';
+
+    document.querySelectorAll('.btnOpenCoffeeModal').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        coffeeModalOverlay.classList.add('active');
+      });
+    });
+
+    btnCloseCoffeeModal.addEventListener('click', () => {
+      coffeeModalOverlay.classList.remove('active');
+    });
+
+    coffeeModalOverlay.addEventListener('click', (e) => {
+      if (e.target === coffeeModalOverlay) {
+        coffeeModalOverlay.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && coffeeModalOverlay.classList.contains('active')) {
+        coffeeModalOverlay.classList.remove('active');
+      }
+    });
+
+    btnCopyAcc.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(bankAccNum);
+        const originalText = btnCopyAcc.innerHTML;
+        btnCopyAcc.innerHTML = '✓ Đã chép STK';
+        btnCopyAcc.style.background = 'rgba(16, 185, 129, 0.2)';
+        btnCopyAcc.style.borderColor = '#10b981';
+        btnCopyAcc.style.color = '#34d399';
+        setTimeout(() => {
+          btnCopyAcc.innerHTML = originalText;
+          btnCopyAcc.style.background = '';
+          btnCopyAcc.style.borderColor = '';
+          btnCopyAcc.style.color = '';
+        }, 2000);
+      } catch (err) {
+        // Fallback for older browsers
+        const tempInput = document.createElement('input');
+        tempInput.value = bankAccNum;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        btnCopyAcc.textContent = '✓ Đã chép STK';
+        setTimeout(() => {
+          btnCopyAcc.innerHTML = '📋 Sao chép STK';
+        }, 2000);
+      }
+    });
+  </script>
+</body>
+</html>
