@@ -653,52 +653,192 @@
     .cyd-gallery {
       display: flex;
       flex-direction: column;
-      gap: 20px;
-    }
-
-    .cyd-main-view {
-      background: #000;
-      border: 1px solid var(--border-accent);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
-      text-align: center;
-    }
-
-    .cyd-main-view img {
-      max-width: 100%;
-      height: auto;
-      border-radius: var(--radius-md);
-      display: block;
-      margin: 0 auto;
-    }
-
-    .cyd-screen-view {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      display: flex;
-      align-items: center;
       gap: 16px;
     }
 
-    .cyd-screen-view img {
-      width: 160px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    .cyd-main-view {
+      position: relative;
+      background: radial-gradient(circle at 50% 25%, rgba(0, 210, 255, 0.12), #070b14 75%);
+      border: 1px solid rgba(0, 210, 255, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 210, 255, 0.15);
+      text-align: center;
+      transition: all 0.3s ease;
     }
 
-    .cyd-screen-view div h4 {
-      font-size: 1rem;
+    .cyd-main-view:hover {
+      border-color: rgba(0, 210, 255, 0.6);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 210, 255, 0.25);
+    }
+
+    .cyd-badge-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cyd-live-pill {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: #34d399;
+      font-size: 0.72rem;
       font-weight: 700;
-      color: #fff;
-      margin-bottom: 4px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
     }
 
-    .cyd-screen-view div p {
-      font-size: 0.85rem;
+    .cyd-live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10b981;
+      animation: cydPulse 1.8s infinite;
+      margin-right: 6px;
+    }
+
+    @keyframes cydPulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { transform: scale(1.15); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .cyd-chip-pill {
+      background: rgba(0, 210, 255, 0.1);
+      border: 1px solid rgba(0, 210, 255, 0.3);
+      color: var(--primary);
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    .cyd-img-frame {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .cyd-main-view img {
+      width: 100%;
+      height: auto;
+      max-height: 380px;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      display: block;
+      margin: 0 auto;
+      transition: opacity 0.25s ease, transform 0.3s ease;
+    }
+
+    .cyd-thumbnails {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .cyd-thumb {
+      background: var(--bg-card);
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      user-select: none;
+    }
+
+    .cyd-thumb:hover {
+      border-color: rgba(0, 210, 255, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .cyd-thumb.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 15px var(--primary-glow);
+      background: rgba(0, 210, 255, 0.08);
+    }
+
+    .cyd-thumb img {
+      width: 100%;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .cyd-thumb span {
+      font-size: 0.7rem;
       color: var(--text-muted);
+      display: block;
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 500;
+    }
+
+    .cyd-thumb.active span {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Live Data Breakdown Grid */
+    .cyd-live-breakdown {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .breakdown-card {
+      background: rgba(15, 23, 38, 0.8);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .breakdown-card:hover {
+      border-color: rgba(0, 210, 255, 0.3);
+      background: rgba(15, 23, 38, 0.95);
+    }
+
+    .breakdown-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .breakdown-info strong {
+      color: #fff;
+      display: block;
+      font-size: 0.85rem;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+
+    .breakdown-info span {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      line-height: 1.2;
+      display: block;
     }
 
     .cyd-details h2 {
