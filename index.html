@@ -206,6 +206,17 @@
       transform: translateY(-2px);
     }
 
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35);
+    }
+
+    .btn-danger:hover {
+      box-shadow: 0 6px 24px rgba(239, 68, 68, 0.55);
+      transform: translateY(-2px);
+    }
+
     .btn-coffee {
       background: rgba(245, 158, 11, 0.12);
       color: #fbbf24;
@@ -1886,9 +1897,17 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="flashOffset">Địa chỉ Offset:</label>
-                  <input type="text" id="flashOffset" class="form-control" value="0x10000" title="Địa chỉ nạp phân vùng App ESP-IDF mặc định là 0x10000">
+                  <label for="flashOffset">Chế độ phân vùng:</label>
+                  <input type="text" id="flashOffset" class="form-control" value="Tự động (Bootloader + App)" readonly title="Hệ thống tự động nạp Bootloader, Partition Table và App">
                 </div>
+              </div>
+
+              <!-- Erase Flash Checkbox -->
+              <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px 14px; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: var(--radius-sm);">
+                <input type="checkbox" id="chkEraseFlash" style="width: 18px; height: 18px; accent-color: var(--danger); cursor: pointer;">
+                <label for="chkEraseFlash" style="margin-bottom: 0; cursor: pointer; color: #f1f5f9; font-size: 0.88rem; user-select: none;">
+                  🧹 <strong>Xóa sạch dữ liệu (Erase Flash) trước khi nạp</strong> <em>(Khuyên dùng khi đổi firmware hoặc cài lần đầu)</em>
+                </label>
               </div>
             </div>
 
@@ -1898,6 +1917,12 @@
               <button id="btnStartFlash" class="btn btn-flash btn-lg">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                 ⚡ Kết Nối & Nạp Firmware
+              </button>
+
+              <!-- Dedicated Erase Chip Button -->
+              <button id="btnEraseFlash" class="btn btn-danger btn-lg" title="Xóa toàn bộ flash trên ESP32">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                🗑️ Xóa Flash (Erase Chip)
               </button>
 
               <!-- Official ESP Web Tools Button -->
@@ -2126,6 +2151,8 @@
     const terminalStatusText = document.getElementById('terminalStatusText');
     const terminalStatusDot = document.getElementById('terminalStatusDot');
     const btnStartFlash = document.getElementById('btnStartFlash');
+    const btnEraseFlash = document.getElementById('btnEraseFlash');
+    const chkEraseFlash = document.getElementById('chkEraseFlash');
     const btnClearConsole = document.getElementById('btnClearConsole');
     const baudRateSelect = document.getElementById('baudRateSelect');
     const flashOffsetInput = document.getElementById('flashOffset');
@@ -2134,29 +2161,40 @@
     const progressPercentage = document.getElementById('progressPercentage');
     const progressFill = document.getElementById('progressFill');
 
+    const BOARDS_CONFIG = {
+      s3: {
+        name: 'ESP32-S3 ES3C28P 2.8" (Cảm ứng điện dung)',
+        parts: [
+          { name: 'Bootloader', path: 's3-bootloader.bin', address: 0x0 },
+          { name: 'Partition Table', path: 's3-partition-table.bin', address: 0x8000 },
+          { name: 'App Firmware', path: 'esp32s3-ES3C28P.bin', address: 0x10000 },
+          { name: 'Voice Models', path: 's3-srmodels.bin', address: 0x310000 }
+        ]
+      },
+      cyd: {
+        name: 'ESP32 CYD 2.8" ESP32-2432S028R (Cảm ứng điện trở)',
+        parts: [
+          { name: 'Bootloader', path: 'cyd-bootloader.bin', address: 0x1000 },
+          { name: 'Partition Table', path: 'cyd-partition-table.bin', address: 0x8000 },
+          { name: 'App Firmware', path: 'esp32-cyd-dimohub.bin', address: 0x10000 }
+        ]
+      }
+    };
+
     let currentBoard = 's3';
-    let currentFirmware = 'esp32s3-ES3C28P.bin';
 
     const tabBoardS3 = document.getElementById('tabBoardS3');
     const tabBoardCyd = document.getElementById('tabBoardCyd');
-    const firmwareFileName = document.getElementById('firmwareFileName');
-    const firmwareFileSize = document.getElementById('firmwareFileSize');
     function selectBoard(board) {
       currentBoard = board;
       if (board === 's3') {
         tabBoardS3?.classList.add('active');
         tabBoardCyd?.classList.remove('active');
-        currentFirmware = 'esp32s3-ES3C28P.bin';
-        if (firmwareFileName) firmwareFileName.textContent = 'esp32s3-ES3C28P.bin';
-        if (firmwareFileSize) firmwareFileSize.textContent = '(1.39 MB)';
-        log('[Chọn Bo Mạch] Đã chọn ESP32-S3 ES3C28P 2.8" (Cảm ứng điện dung - File: esp32s3-ES3C28P.bin).', 'info');
+        log('[Chọn Bo Mạch] Đã chọn ESP32-S3 ES3C28P (Full: Bootloader + Partition Table + App + Voice Models).', 'info');
       } else {
         tabBoardCyd?.classList.add('active');
         tabBoardS3?.classList.remove('active');
-        currentFirmware = 'esp32-cyd-dimohub.bin';
-        if (firmwareFileName) firmwareFileName.textContent = 'esp32-cyd-dimohub.bin';
-        if (firmwareFileSize) firmwareFileSize.textContent = '(1.31 MB)';
-        log('[Chọn Bo Mạch] Đã chọn ESP32 CYD 2.8" ESP32-2432S028R (Cảm ứng điện trở - File: esp32-cyd-dimohub.bin).', 'info');
+        log('[Chọn Bo Mạch] Đã chọn ESP32 CYD 2.8" (Full: Bootloader + Partition Table + App).', 'info');
       }
     }
 
@@ -2211,6 +2249,7 @@
       }
     };
 
+    // ⚡ Nạp Toàn Bộ Firmware (Full Bootloader + Partition Table + App + Models)
     btnStartFlash.addEventListener('click', async () => {
       if (!('serial' in navigator)) {
         alert('Trình duyệt của bạn hiện chưa hỗ trợ Web Serial API!\n\nVui lòng mở trang web này bằng Google Chrome hoặc Microsoft Edge trên máy tính để thực hiện nạp firmware trực tiếp.');
@@ -2219,6 +2258,7 @@
       }
 
       btnStartFlash.disabled = true;
+      btnEraseFlash.disabled = true;
       terminalStatusDot.style.background = '#f59e0b';
       terminalStatusDot.style.boxShadow = '0 0 8px #f59e0b';
       terminalStatusText.textContent = 'Đang yêu cầu kết nối cổng Serial...';
@@ -2230,9 +2270,10 @@
       let port = null;
       let transport = null;
       let esploader = null;
+      const config = BOARDS_CONFIG[currentBoard];
 
       try {
-        log(`\n--- BẮT ĐẦU QUÁ TRÌNH NẠP FIRMWARE: ${currentFirmware} ---`, 'warn');
+        log(`\n--- BẮT ĐẦU QUÁ TRÌNH NẠP FIRMWARE: ${config.name} ---`, 'warn');
         log('1. Đang mở hộp thoại chọn cổng Serial COM...', 'info');
 
         port = await navigator.serial.requestPort();
@@ -2256,44 +2297,59 @@
         const mac = await esploader.chip.readMac(esploader);
         log(`-> Địa chỉ MAC thiết bị: ${mac}`, 'info');
 
-        // Fetch firmware file
-        terminalStatusText.textContent = `Đang tải file ${currentFirmware}...`;
-        progressStatus.textContent = 'Đang tải firmware từ máy chủ...';
-        log(`4. Đang nạp dữ liệu firmware: ${currentFirmware}...`, 'info');
-
-        const fwResponse = await fetch(currentFirmware);
-        if (!fwResponse.ok) {
-          throw new Error(`Không thể tải file firmware (HTTP ${fwResponse.status})`);
+        // BƯỚC ERASE FLASH NẾU ĐƯỢC CHỌN
+        if (chkEraseFlash && chkEraseFlash.checked) {
+          terminalStatusText.textContent = 'Đang xóa sạch chip (Erase Flash)...';
+          progressStatus.textContent = 'Đang xóa toàn bộ bộ nhớ Flash...';
+          log('\n⚡ [Erase Flash] Đang tiến hành xóa sạch toàn bộ chip nhớ Flash (khoảng 10-25 giây)...', 'warn');
+          await esploader.eraseFlash();
+          log('-> Đã xóa sạch Flash thành công!', 'success');
         }
 
-        const fwBlob = await fwResponse.blob();
-        log(`-> Kích thước firmware: ${(fwBlob.size / 1024).toFixed(1)} KB`, 'info');
+        // TẢI TOÀN BỘ CÁC PHÂN VÙNG
+        terminalStatusText.textContent = 'Đang tải các phân vùng firmware...';
+        progressStatus.textContent = 'Đang tải dữ liệu từ máy chủ...';
+        log('\n4. Đang chuẩn bị các phân vùng nhị phân (Full Image)...', 'info');
 
-        const binaryString = await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsBinaryString(fwBlob);
-        });
+        const fileArray = [];
+        let totalBytes = 0;
 
-        // Parse offset
-        let offsetStr = flashOffsetInput.value.trim();
-        let offset = 0x10000;
-        if (offsetStr.startsWith('0x') || offsetStr.startsWith('0X')) {
-          offset = parseInt(offsetStr, 16);
-        } else {
-          offset = parseInt(offsetStr, 10);
+        for (const part of config.parts) {
+          terminalStatusText.textContent = `Đang tải ${part.name}...`;
+          const fwResponse = await fetch(part.path);
+          if (!fwResponse.ok) {
+            throw new Error(`Không thể tải ${part.path} (HTTP ${fwResponse.status})`);
+          }
+
+          const fwBlob = await fwResponse.blob();
+          totalBytes += fwBlob.size;
+
+          const binaryString = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsBinaryString(fwBlob);
+          });
+
+          fileArray.push({
+            data: binaryString,
+            address: part.address
+          });
+
+          log(`  • [0x${part.address.toString(16).toUpperCase()}] ${part.name}: ${(fwBlob.size / 1024).toFixed(1)} KB`, 'info');
         }
-        if (isNaN(offset)) offset = 0x10000;
 
-        log(`5. Đang ghi Flash vào địa chỉ 0x${offset.toString(16).toUpperCase()}...`, 'warn');
+        log(`-> Tổng dung lượng cần nạp: ${(totalBytes / 1024).toFixed(1)} KB qua ${fileArray.length} phân vùng.`, 'info');
+
+        // GHI FLASH
         terminalStatusText.textContent = 'Đang ghi dữ liệu vào Flash...';
         progressStatus.textContent = 'Đang ghi flash...';
+        log('\n5. Đang nạp toàn bộ các phân vùng vào Flash...', 'warn');
 
-        const fileArray = [{
-          data: binaryString,
-          address: offset
-        }];
+        const fileOffsets = [0];
+        for (let idx = 0; idx < fileArray.length - 1; idx++) {
+          fileOffsets.push(fileOffsets[idx] + fileArray[idx].data.length);
+        }
 
         await esploader.writeFlash({
           fileArray: fileArray,
@@ -2301,29 +2357,28 @@
           eraseAll: false,
           compress: true,
           reportProgress: (fileIndex, written, total) => {
-            const pct = Math.min(100, Math.round((written / total) * 100));
+            const currentTotal = (fileOffsets[fileIndex] || 0) + written;
+            const pct = Math.min(100, Math.round((currentTotal / totalBytes) * 100));
             progressFill.style.width = pct + '%';
             progressPercentage.textContent = pct + '%';
-            progressStatus.textContent = `Đang ghi: ${pct}% (${(written / 1024).toFixed(0)} / ${(total / 1024).toFixed(0)} KB)`;
+            progressStatus.textContent = `Đang ghi phân vùng [${fileIndex + 1}/${fileArray.length}]: ${pct}% (${(currentTotal / 1024).toFixed(0)} / ${(totalBytes / 1024).toFixed(0)} KB)`;
           }
         });
 
         progressFill.style.width = '100%';
         progressPercentage.textContent = '100%';
-        progressStatus.textContent = 'Nạp hoàn tất!';
+        progressStatus.textContent = 'Nạp hoàn tất 100%!';
         terminalStatusDot.style.background = '#10b981';
         terminalStatusDot.style.boxShadow = '0 0 8px #10b981';
         terminalStatusText.textContent = 'Nạp thành công!';
 
-        log('\n🎉 CHÚC MỪNG: NẠP FIRMWARE DIMOHUB CHO CYD 2.8" HOÀN TẤT 100%!', 'success');
-        log('Thiết bị đang khởi động lại. Hãy mở ứng dụng DimoHub trên điện thoại và bật kết nối BLE để trải nghiệm!', 'success');
+        log(`\n🎉 CHÚC MỪNG: NẠP TOÀN BỘ PHÂN VÙNG CHO ${config.name} THÀNH CÔNG 100%!`, 'success');
+        log('Thiết bị có đầy đủ Bootloader, Partition Table và App DimoHub. Đang khởi động...', 'success');
 
         // Reset ESP32
         try {
           await esploader.hardReset();
-        } catch (e) {
-          // Hard reset can disconnect
-        }
+        } catch (e) {}
 
       } catch (err) {
         log(`\n❌ LỖI TRONG QUÁ TRÌNH NẠP: ${err.message || err}`, 'error');
@@ -2338,6 +2393,94 @@
           } catch (e) {}
         }
         btnStartFlash.disabled = false;
+        btnEraseFlash.disabled = false;
+      }
+    });
+
+    // 🗑️ Nút Xóa Sạch Chip Riêng Biệt (Erase Flash Only)
+    btnEraseFlash.addEventListener('click', async () => {
+      if (!('serial' in navigator)) {
+        alert('Trình duyệt của bạn hiện chưa hỗ trợ Web Serial API!\n\nVui lòng mở trang web này bằng Google Chrome hoặc Microsoft Edge trên máy tính để thực hiện thao tác.');
+        log('LỖI: Trình duyệt không hỗ trợ Web Serial API. Hãy dùng Google Chrome hoặc Microsoft Edge!', 'error');
+        return;
+      }
+
+      const confirmed = confirm('⚠️ CẢNH BÁO XÓA SẠCH FLASH (ERASE CHIP):\n\nBạn có chắc chắn muốn xóa toàn bộ bộ nhớ flash của ESP32 không?\nThao tác này sẽ xóa sạch firmware hiện tại, bảng phân vùng và toàn bộ dữ liệu cấu hình NVS.');
+      if (!confirmed) return;
+
+      btnStartFlash.disabled = true;
+      btnEraseFlash.disabled = true;
+      terminalStatusDot.style.background = '#f59e0b';
+      terminalStatusDot.style.boxShadow = '0 0 8px #f59e0b';
+      terminalStatusText.textContent = 'Đang yêu cầu kết nối cổng Serial...';
+      progressContainer.style.display = 'block';
+      progressFill.style.width = '0%';
+      progressPercentage.textContent = '...';
+      progressStatus.textContent = 'Đang kết nối để xóa Flash...';
+
+      let port = null;
+      let transport = null;
+      let esploader = null;
+
+      try {
+        log('\n--- BẮT ĐẦU QUÁ TRÌNH XÓA SẠCH FLASH (ERASE CHIP) ---', 'warn');
+        log('1. Đang mở hộp thoại chọn cổng Serial COM...', 'info');
+
+        port = await navigator.serial.requestPort();
+        transport = new Transport(port, true);
+
+        const baudrate = parseInt(baudRateSelect.value) || 460800;
+        log(`2. Khởi tạo kết nối với tốc độ baud: ${baudrate}...`, 'info');
+
+        esploader = new ESPLoader({
+          transport: transport,
+          baudrate: baudrate,
+          romBaudrate: 115200,
+          terminal: customTerminal
+        });
+
+        terminalStatusText.textContent = 'Đang đồng bộ chip ESP32...';
+        log('3. Đang đồng bộ và nhận diện vi xử lý ESP32...', 'info');
+        const chip = await esploader.main();
+        log(`-> Nhận diện chip thành công: ${chip}`, 'success');
+
+        const mac = await esploader.chip.readMac(esploader);
+        log(`-> Địa chỉ MAC thiết bị: ${mac}`, 'info');
+
+        terminalStatusText.textContent = 'Đang xóa sạch chip (Erase Flash)...';
+        progressStatus.textContent = 'Đang xóa toàn bộ Flash (khoảng 10-25 giây)...';
+        log('4. Đang gửi lệnh xóa toàn bộ bộ nhớ Flash (Chip Erase)...', 'warn');
+
+        await esploader.eraseFlash();
+
+        progressFill.style.width = '100%';
+        progressPercentage.textContent = '100%';
+        progressStatus.textContent = 'Xóa chip hoàn tất!';
+        terminalStatusDot.style.background = '#10b981';
+        terminalStatusDot.style.boxShadow = '0 0 8px #10b981';
+        terminalStatusText.textContent = 'Erase thành công!';
+
+        log('\n🎉 THÀNH CÔNG: ĐÃ XÓA TRẮNG TOÀN BỘ FLASH TRÊN ESP32!', 'success');
+        log('Bây giờ bo mạch đã sạch dữ liệu cũ. Bạn có thể tiến hành nạp lại Firmware mới.', 'info');
+
+        try {
+          await esploader.hardReset();
+        } catch (e) {}
+
+      } catch (err) {
+        log(`\n❌ LỖI TRONG QUÁ TRÌNH ERASE: ${err.message || err}`, 'error');
+        terminalStatusDot.style.background = '#ef4444';
+        terminalStatusDot.style.boxShadow = '0 0 8px #ef4444';
+        terminalStatusText.textContent = 'Lỗi xóa chip!';
+        progressStatus.textContent = 'Lỗi Erase!';
+      } finally {
+        if (transport) {
+          try {
+            await transport.disconnect();
+          } catch (e) {}
+        }
+        btnStartFlash.disabled = false;
+        btnEraseFlash.disabled = false;
       }
     });
 
