@@ -2167,8 +2167,7 @@
         parts: [
           { name: 'Bootloader', path: 's3-bootloader.bin', address: 0x0 },
           { name: 'Partition Table', path: 's3-partition-table.bin', address: 0x8000 },
-          { name: 'App Firmware', path: 'esp32s3-ES3C28P.bin', address: 0x10000 },
-          { name: 'Voice Models', path: 's3-srmodels.bin', address: 0x310000 }
+          { name: 'App Firmware', path: 'esp32s3-ES3C28P.bin', address: 0x10000 }
         ]
       },
       cyd: {
@@ -2190,7 +2189,7 @@
       if (board === 's3') {
         tabBoardS3?.classList.add('active');
         tabBoardCyd?.classList.remove('active');
-        log('[Chọn Bo Mạch] Đã chọn ESP32-S3 ES3C28P (Full: Bootloader + Partition Table + App + Voice Models).', 'info');
+        log('[Chọn Bo Mạch] Đã chọn ESP32-S3 ES3C28P (Full: Bootloader + Partition Table + App).', 'info');
       } else {
         tabBoardCyd?.classList.add('active');
         tabBoardS3?.classList.remove('active');

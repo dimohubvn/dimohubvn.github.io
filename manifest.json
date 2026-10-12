@@ -36,10 +36,6 @@
         {
           "path": "esp32s3-ES3C28P.bin",
           "offset": 65536
-        },
-        {
-          "path": "s3-srmodels.bin",
-          "offset": 3211264
         }
       ]
     }
