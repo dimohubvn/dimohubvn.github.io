@@ -135,6 +135,99 @@
       gap: 12px;
     }
 
+    /* App Download Dropdown */
+    .nav-dropdown {
+      position: relative;
+    }
+
+    .nav-dropdown-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(16px);
+      padding: 8px;
+      min-width: 220px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1002;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown:focus-within .nav-dropdown-menu,
+    .nav-dropdown.active .nav-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: #fff;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid transparent;
+    }
+
+    .dropdown-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(0, 210, 255, 0.3);
+      transform: translateX(3px);
+    }
+
+    .dropdown-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dropdown-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .dropdown-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .dropdown-text strong {
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: #fff;
+    }
+
+    .dropdown-text span {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      line-height: 1.2;
+      margin-top: 2px;
+    }
+
     /* Buttons */
     .btn {
       display: inline-flex;
@@ -421,7 +514,8 @@
       margin-bottom: 36px;
     }
 
-    .playstore-btn {
+    .playstore-btn,
+    .appstore-btn {
       display: inline-flex;
       align-items: center;
       gap: 14px;
@@ -431,15 +525,18 @@
       border-radius: var(--radius-md);
       transition: all 0.25s ease;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      text-decoration: none;
     }
 
-    .playstore-btn:hover {
+    .playstore-btn:hover,
+    .appstore-btn:hover {
       border-color: var(--primary);
       transform: translateY(-2px);
       box-shadow: 0 6px 25px rgba(0, 210, 255, 0.3);
     }
 
-    .playstore-btn svg {
+    .playstore-btn svg,
+    .appstore-btn svg {
       width: 30px;
       height: 30px;
       flex-shrink: 0;
@@ -1513,6 +1610,7 @@
       .hero-buttons a,
       .hero-buttons button {
         width: 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -1538,9 +1636,37 @@
         <div class="nav-actions">
           <button class="btn btn-coffee btn-sm btnOpenCoffeeModal" title="Mời tác giả ly cà phê">☕ Mời Cà Phê</button>
           <a href="#flasher" class="btn btn-outline btn-sm">⚡ Nạp FW</a>
-          <a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
-            Tải App
-          </a>
+          <div class="nav-dropdown" id="navDownloadDropdown">
+            <button class="btn btn-primary btn-sm nav-dropdown-btn" type="button" aria-haspopup="true" aria-expanded="false">
+              <span>Tải App</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div class="nav-dropdown-menu">
+              <a href="https://apps.apple.com/vn/app/dimohub/id6820303732?l=vi" target="_blank" rel="noopener" class="dropdown-item">
+                <span class="dropdown-icon">
+                  <svg viewBox="0 0 384 512" fill="#fff"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+                </span>
+                <div class="dropdown-text">
+                  <strong>App Store</strong>
+                  <span>Cho iOS / iPhone</span>
+                </div>
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener" class="dropdown-item">
+                <span class="dropdown-icon">
+                  <svg viewBox="0 0 512 512">
+                    <path fill="#4285F4" d="M32.5 12.8C25.3 20.3 21 31.9 21 46.5v419c0 14.6 4.3 26.2 11.5 33.7l1.7 1.7 234.6-234.6v-5.6L34.2 11.1l-1.7 1.7z"/>
+                    <path fill="#FBBC04" d="M346.5 331.6l-77.7-77.7v-5.6l77.7-77.7 2.1 1.2 92.1 52.3c26.3 14.9 26.3 39.4 0 54.3l-92.1 52.3-2.1 1.2z"/>
+                    <path fill="#EA4335" d="M348.6 330.4L268.8 250.6 32.5 486.9c8.6 9.1 22.8 10.3 38.6 1.3l277.5-157.8"/>
+                    <path fill="#34A853" d="M348.6 173.6L71.1 15.8C55.3 6.8 41.1 8 32.5 17.1l236.3 236.3 79.8-79.8z"/>
+                  </svg>
+                </span>
+                <div class="dropdown-text">
+                  <strong>Google Play</strong>
+                  <span>Cho Android</span>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1566,6 +1692,17 @@
           </p>
 
           <div class="hero-buttons">
+            <!-- Apple App Store Button -->
+            <a href="https://apps.apple.com/vn/app/dimohub/id6820303732?l=vi" target="_blank" rel="noopener" class="appstore-btn">
+              <svg viewBox="0 0 384 512" fill="#fff">
+                <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+              </svg>
+              <div class="playstore-text">
+                <span class="sub">Tải miễn phí trên</span>
+                <span class="main">App Store</span>
+              </div>
+            </a>
+
             <!-- Google Play Store Button -->
             <a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener" class="playstore-btn">
               <svg viewBox="0 0 512 512">
@@ -2129,6 +2266,7 @@
         </div>
 
         <ul class="footer-links">
+          <li><a href="https://apps.apple.com/vn/app/dimohub/id6820303732?l=vi" target="_blank" rel="noopener">App Store</a></li>
           <li><a href="https://play.google.com/store/apps/details?id=com.dangtinh.dimohub&hl=vi" target="_blank" rel="noopener">Google Play</a></li>
           <li><a href="https://s.shopee.vn/3B83Ot3kh5" target="_blank" rel="noopener">Mua Board S3</a></li>
           <li><a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener">Mua Board CYD</a></li>
@@ -2540,6 +2678,21 @@
         }, 2000);
       }
     });
+
+    // Nav Download Dropdown toggle
+    const navDownloadDropdown = document.getElementById('navDownloadDropdown');
+    if (navDownloadDropdown) {
+      const dropdownBtn = navDownloadDropdown.querySelector('.nav-dropdown-btn');
+      dropdownBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = navDownloadDropdown.classList.toggle('active');
+        dropdownBtn.setAttribute('aria-expanded', isOpen);
+      });
+      document.addEventListener('click', () => {
+        navDownloadDropdown.classList.remove('active');
+        dropdownBtn.setAttribute('aria-expanded', 'false');
+      });
+    }
   </script>
 </body>
 </html>
