@@ -1613,6 +1613,216 @@
         justify-content: center;
       }
     }
+
+    /* ========================================================
+       KHO FIRMWARE MỞ RỘNG (DỰ ÁN KHÁC NGOÀI DIMOHUB)
+       ======================================================== */
+    .ext-fw-section {
+      margin-top: 60px;
+      padding-top: 50px;
+      border-top: 1px dashed rgba(0, 210, 255, 0.3);
+    }
+
+    .ext-fw-card {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(22, 34, 56, 0.9) 100%);
+      border: 1px solid rgba(0, 210, 255, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 210, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ext-fw-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #00d2ff, #3b82f6, #10b981);
+    }
+
+    .ext-project-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 16px 20px;
+      background: rgba(0, 210, 255, 0.06);
+      border: 1px solid rgba(0, 210, 255, 0.2);
+      border-radius: var(--radius-md);
+    }
+
+    .ext-project-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .ext-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .ext-badge-chip {
+      background: rgba(0, 210, 255, 0.15);
+      color: #00d2ff;
+      border: 1px solid rgba(0, 210, 255, 0.35);
+    }
+
+    .ext-badge-cat {
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.35);
+    }
+
+    .ext-badge-ver {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .ext-presets-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .ext-preset-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .ext-preset-btn:hover {
+      background: rgba(0, 210, 255, 0.1);
+      border-color: rgba(0, 210, 255, 0.3);
+      color: #fff;
+    }
+
+    .ext-preset-btn.active {
+      background: rgba(0, 210, 255, 0.2);
+      border-color: var(--primary);
+      color: #00d2ff;
+      box-shadow: 0 0 12px rgba(0, 210, 255, 0.25);
+    }
+
+    .ext-parts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .ext-part-row {
+      display: grid;
+      grid-template-columns: 28px 1fr 110px 100px 90px;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      transition: border 0.15s;
+    }
+
+    .ext-part-row:hover {
+      border-color: rgba(0, 210, 255, 0.25);
+    }
+
+    .ext-part-row input[type="text"] {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: #00d2ff;
+      font-family: monospace;
+      font-size: 0.82rem;
+      padding: 4px 8px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .ext-part-name {
+      font-weight: 600;
+      color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ext-part-file {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    .ext-part-size {
+      color: #94a3b8;
+      font-size: 0.8rem;
+      text-align: right;
+    }
+
+    .ext-part-status {
+      font-size: 0.75rem;
+      color: #34d399;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .ext-custom-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .ext-custom-box.active {
+      display: block;
+    }
+
+    .ext-custom-file-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 40px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .ext-part-row {
+        grid-template-columns: 28px 1fr;
+        gap: 6px;
+      }
+      .ext-part-row input[type="text"],
+      .ext-part-size,
+      .ext-part-status {
+        grid-column: 2;
+        text-align: left;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1631,6 +1841,7 @@
           <li><a href="#cyd-display">Màn Hình HUD 2.8"</a></li>
           <li><a href="#flasher">Nạp Firmware</a></li>
           <li><a href="#shop">Mua Sản Phẩm</a></li>
+          <li><a href="#other-firmwares" style="color: #00d2ff; font-weight: 700;">🤖 FW Khác</a></li>
         </ul>
 
         <div class="nav-actions">
@@ -2218,6 +2429,113 @@
           ☕ Mời Tác Giả Ly Cà Phê
         </button>
       </div>
+
+      <!-- ========================================================
+           KHO FIRMWARE MỞ RỘNG (DỰ ÁN KHÁC NGOÀI DIMOHUB)
+           Nằm ngay dưới phần support-banner theo yêu cầu
+           ======================================================== -->
+      <div id="other-firmwares" class="ext-fw-section">
+        <div class="section-header" style="text-align: center; margin-bottom: 32px;">
+          <span class="section-badge" style="background: rgba(0, 210, 255, 0.12); color: #00d2ff; border-color: rgba(0, 210, 255, 0.35);">
+            🚀 KHO FIRMWARE MỞ RỘNG
+          </span>
+          <h2 class="section-title" style="margin-top: 10px;">Các Dự Án Firmware Khác Ngoài DimoHub</h2>
+          <p class="section-subtitle" style="max-width: 780px; margin: 0 auto;">
+            Nạp trực tiếp qua trình duyệt Web Serial (Google Chrome / Microsoft Edge). Chỉ cần chọn loại firmware bên dưới và nhấn nạp!
+          </p>
+        </div>
+
+        <div class="flasher-card">
+          <div class="flasher-layout">
+            <!-- Controls Column -->
+            <div class="flasher-controls">
+              <h3>⚡ Chọn Loại Firmware & Nhấn Nạp</h3>
+              
+              <ol class="steps-list">
+                <li class="step-item">
+                  <strong>Cắm cáp USB Type-C:</strong> Nối bo mạch ESP32-S3 vào cổng USB máy tính.
+                </li>
+                <li class="step-item">
+                  <strong>Chọn loại firmware:</strong> Nhấn chọn firmware bạn muốn nạp bên dưới (mặc định đã chọn <em>AI Voice - Esp32s3</em>).
+                </li>
+                <li class="step-item">
+                  <strong>Bấm nạp tự động:</strong> Nhấn <em>"⚡ Kết Nối & Nạp Firmware"</em> và chọn cổng COM. Hệ thống tự động xóa sạch Flash cũ (Erase) và nạp toàn bộ chương trình vào chip!
+                </li>
+              </ol>
+
+              <div class="flasher-form">
+                <!-- Firmware Tabs Selector -->
+                <div class="form-group" style="margin-bottom: 6px;">
+                  <label style="display:block; margin-bottom: 8px; font-weight: 700; color: #fff;">Chọn Loại Firmware:</label>
+                  <div class="board-selector-tabs" id="extFwTabs">
+                    <!-- Populated dynamically from firmwares.json -->
+                    <div class="board-tab-btn active" data-id="ai_voice_s3">
+                      <span style="font-size: 1.25rem;">🎙️</span>
+                      <div>
+                        <div style="font-weight: 700; color: #fff;">AI Voice - Esp32s3</div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">Trợ lý giọng nói Gemini Live</div>
+                      </div>
+                      <span class="badge-chip">MỚI NHẤT</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Description Box -->
+                <div style="background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 10px;">
+                  <div style="font-size: 0.85rem; font-weight: 700; color: #00d2ff; margin-bottom: 6px;">📖 Mô Tả Firmware:</div>
+                  <p id="extFwDescText" style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; margin-bottom: 8px;">
+                    Trợ lý giọng nói thông minh AI tích hợp Google Gemini Live WebSocket hai chiều, Micro I2S, Loa khuếch đại MAX98357A, Wake Word nhận diện tiếng Việt.
+                  </p>
+                  <div id="extFwAutoInfo" style="font-size: 0.8rem; color: #94a3b8; line-height: 1.5;">
+                    ⚡ <strong>Chế độ tối ưu sẵn:</strong> Tự động xóa sạch Flash cũ (Erase) và ghi đầy đủ: Bootloader, Partition Table, App AI Voice và Model nhận diện giọng nói (ESP-SR).
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flasher-buttons-row">
+                <button id="btnExtStartFlash" class="btn btn-flash btn-lg">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                  ⚡ Kết Nối & Nạp Firmware
+                </button>
+
+                <button id="btnExtClearConsole" class="btn btn-outline btn-sm" style="margin-left: auto;">
+                  🧹 Xóa Log
+                </button>
+              </div>
+
+              <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 14px;">
+                * <em>Mẹo kỹ thuật:</em> Nếu máy tính không nhận cổng COM, giữ nút <strong>BOOT</strong> trên bo mạch, cắm cáp USB (hoặc bấm nhả <strong>RST/EN</strong>) rồi nhả nút BOOT để vào chế độ nạp ROM Bootloader.
+              </p>
+            </div>
+
+            <!-- Console Terminal Column -->
+            <div class="console-box">
+              <div class="console-header">
+                <div class="title">
+                  <span class="dot" id="extTerminalStatusDot"></span>
+                  <span id="extTerminalStatusText">Web Serial Console — Sẵn sàng</span>
+                </div>
+                <span id="extTerminalBoardTag" style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">ESP32-S3 Voice AI</span>
+              </div>
+
+              <div class="console-body" id="extTerminalOutput">[Multi-Firmware Flasher] Khởi tạo môi trường Web Serial...
+[Firmware đã chọn] AI Voice - Esp32s3
+[Hướng dẫn] Cắm cáp USB bo mạch ESP32-S3 và nhấn "⚡ Kết Nối & Nạp Firmware".</div>
+
+              <div class="progress-container" id="extProgressContainer">
+                <div class="progress-info">
+                  <span id="extProgressStatus">Đang nạp firmware...</span>
+                  <span id="extProgressPercentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="extProgressFill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -2271,12 +2589,13 @@
           <li><a href="https://s.shopee.vn/3B83Ot3kh5" target="_blank" rel="noopener">Mua Board S3</a></li>
           <li><a href="https://s.shopee.vn/4fwr7xoT0X" target="_blank" rel="noopener">Mua Board CYD</a></li>
           <li><a href="#flasher">Nạp Firmware</a></li>
+          <li><a href="#other-firmwares" style="color: #00d2ff;">🤖 FW Dự Án Khác</a></li>
           <li><a href="#" class="btnOpenCoffeeModal" style="color: #fbbf24;">☕ Mời Cà Phê</a></li>
         </ul>
       </div>
 
       <div class="footer-bottom">
-        <p>© 2026 DimoHub — Phát triển bởi Đặng Tỉnh. Đồng hành tin cậy trên mọi cung đường Việt Nam.</p>
+        <p>© 2026 DimoHub — Phát triển bởi Đăng Tính. Đồng hành tin cậy trên mọi cung đường Việt Nam.</p>
       </div>
     </div>
   </footer>
@@ -2284,6 +2603,7 @@
   <!-- Web Serial Flasher Script -->
   <script type="module">
     import { ESPLoader, Transport } from './js/esptool.js';
+    import './js/other_flasher.js';
 
     const terminalOutput = document.getElementById('terminalOutput');
     const terminalStatusText = document.getElementById('terminalStatusText');

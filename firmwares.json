@@ -1,0 +1,15 @@
+[
+  {
+    "id": "ai_voice_s3",
+    "name": "AI Voice - Esp32s3",
+    "subtitle": "Trợ lý giọng nói thông minh AI",
+    "icon": "🎙️",
+    "chip": "ESP32-S3",
+    "badge": "MỚI NHẤT",
+    "desc": "Trợ lý giọng nói thông minh AI tích hợp Google Gemini Live WebSocket hai chiều, Micro I2S, Loa khuếch đại MAX98357A, nhận diện từ khóa giọng nói tiếng Việt.",
+    "auto_flash_info": "Tự động nạp đầy đủ: Bootloader (0x0), Partition Table (0x8000), App AI Voice (0x20000) và Model nhận diện giọng nói ESP-SR (0x620000).",
+    "dir": "firmwares/ai_voice_s3",
+    "manifest": "firmwares/ai_voice_s3/manifest.json",
+    "default": true
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "name": "Tên Dự Án Mẫu (Example Project)",
+  "chip": "ESP32-S3",
+  "flash_mode": "dio",
+  "flash_size": "16MB",
+  "flash_freq": "80m",
+  "version": "1.0.0",
+  "build_date": "2026-11-04",
+  "partitions": [
+    {
+      "id": "bootloader",
+      "name": "Bootloader",
+      "address": "0x0000",
+      "file": "bootloader.bin",
+      "size": "21 KB",
+      "required": true,
+      "desc": "Bộ nạp khởi động Bootloader"
+    },
+    {
+      "id": "partition_table",
+      "name": "Partition Table",
+      "address": "0x8000",
+      "file": "partition-table.bin",
+      "size": "3 KB",
+      "required": true,
+      "desc": "Bảng phân vùng Flash"
+    },
+    {
+      "id": "app",
+      "name": "App Firmware",
+      "address": "0x10000",
+      "file": "firmware.bin",
+      "size": "1.5 MB",
+      "required": true,
+      "desc": "Ứng dụng chính"
+    }
+  ]
+}

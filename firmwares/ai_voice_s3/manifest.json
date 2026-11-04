@@ -1,0 +1,39 @@
+{
+  "name": "AI Voice - Esp32s3",
+  "chip": "ESP32-S3",
+  "flash_mode": "dio",
+  "flash_size": "16MB",
+  "flash_freq": "80m",
+  "version": "1.0.4",
+  "build_date": "2026-11-04",
+  "partitions": [
+    {
+      "id": "bootloader",
+      "name": "Bootloader",
+      "address": 0,
+      "file": "bootloader.bin",
+      "size": "21 KB"
+    },
+    {
+      "id": "partition_table",
+      "name": "Partition Table",
+      "address": 32768,
+      "file": "partition-table.bin",
+      "size": "3 KB"
+    },
+    {
+      "id": "app",
+      "name": "App Firmware (Chương trình AI Voice)",
+      "address": 131072,
+      "file": "ai_voice_esp32s3.bin",
+      "size": "1.7 MB"
+    },
+    {
+      "id": "srmodels",
+      "name": "Wake Word Models (ESP-SR)",
+      "address": 6422528,
+      "file": "srmodels.bin",
+      "size": "284 KB"
+    }
+  ]
+}
