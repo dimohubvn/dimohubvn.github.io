@@ -10,7 +10,7 @@ const DEFAULT_FIRMWARES = [
     chip: "ESP32-S3",
     badge: "MỚI NHẤT",
     desc: "Trợ lý giọng nói thông minh AI tích hợp Google Gemini Live WebSocket hai chiều, Micro I2S, Loa khuếch đại MAX98357A, nhận diện từ khóa giọng nói tiếng Việt.",
-    auto_flash_info": "Hệ thống tự động nạp toàn bộ: Bootloader + Partition Table + App AI Voice + Wake Word Model ESP-SR.",
+    auto_flash_info: "Hệ thống tự động nạp toàn bộ: Bootloader + Partition Table + App AI Voice + Wake Word Model ESP-SR.",
     dir: "firmwares/ai_voice_s3",
     manifest: "firmwares/ai_voice_s3/manifest.json"
   }
